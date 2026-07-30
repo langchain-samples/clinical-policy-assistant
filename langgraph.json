@@ -1,0 +1,10 @@
+{
+  "dependencies": ["."],
+  "graphs": {
+    "medical_information_qa_agent": "./medical_information_qa_graph.py:graph",
+    "medical_information_qa_agent_hitl": "./medical_information_qa_graph.py:graph_hitl",
+    "medical_information_qa_deep_agent": "./medical_information_qa_graph.py:graph_deep"
+  },
+  "env": ".env",
+  "python_version": "3.13"
+}

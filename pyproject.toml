@@ -1,0 +1,26 @@
+[project]
+name = "medical-information-qa"
+version = "0.1.0"
+description = "Medical-information QA agent lab on LangChain, LangGraph, and LangSmith — build, evaluate, orchestrate, deep agent, observe."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    # Framework / runtime
+    "langchain>=1.0",
+    "langchain-openai>=1.0",   # default model provider (OpenAI)
+    "langgraph>=1.0",
+    "deepagents>=0.6,<0.7",    # deep-agent capstone (notebook 04)
+    # Tracing + evals
+    "langsmith>=0.7",
+    # Run graphs locally so LangGraph Studio can open them (`langgraph dev`)
+    "langgraph-cli[inmem]>=0.1",
+    # Notebooks + env
+    "jupyter>=1.0",
+    "jupytext>=1.16",
+    "python-dotenv>=1.0",
+]
+
+# Lab workspace, not a distributable package. Notebooks import `utils`/`evals`/`medical_information_qa_graph`
+# from the repo root; no build step needed.
+[tool.uv]
+package = false
