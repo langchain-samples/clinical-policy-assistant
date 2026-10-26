@@ -1,0 +1,63 @@
+{
+  "_note": "SYNTHETIC / FICTIONAL structured record for the Northfield Health teaching lab. Simplified FHIR-style, not full FHIR. Not a real patient.",
+  "patient": {"id": "NH-1028", "name": "Marion Hale", "birthDate": "1953-03-08", "gender": "female"},
+  "MedicationStatement": [
+    {
+      "resourceType": "MedicationStatement",
+      "id": "ms-1",
+      "status": "active",
+      "medication": {"display": "Pulmoquin (tiravent) metered inhaler", "class": "long-acting inhaled bronchodilator"},
+      "dosage": "2 inhalations twice daily",
+      "effectivePeriod": {"start": "2025-04-09", "end": null},
+      "reason": "COPD with frequent exacerbations; dose increased from 1 inhalation once daily",
+      "source_doc_id": "NH-1028-03-progress-note"
+    },
+    {
+      "resourceType": "MedicationStatement",
+      "id": "ms-2",
+      "status": "stopped",
+      "medication": {"display": "Pulmoquin (tiravent) metered inhaler", "class": "long-acting inhaled bronchodilator"},
+      "dosage": "1 inhalation once daily",
+      "effectivePeriod": {"start": "2024", "end": "2025-04-09"},
+      "reason": "COPD maintenance; superseded by 2 inhalations twice daily",
+      "source_doc_id": "NH-1028-08-progress-note"
+    },
+    {
+      "resourceType": "MedicationStatement",
+      "id": "ms-3",
+      "status": "active",
+      "medication": {"display": "Brevamistol (lufezamide) dry-powder inhaler", "class": "maintenance inhaled bronchodilator"},
+      "dosage": "1 inhalation twice daily",
+      "effectivePeriod": {"start": "2023", "end": null},
+      "reason": "COPD maintenance",
+      "source_doc_id": "NH-1028-02-medication-list"
+    },
+    {
+      "resourceType": "MedicationStatement",
+      "id": "ms-4",
+      "status": "completed",
+      "medication": {"display": "Quinavort (selvoxin) 500 mg tablet", "class": "antibiotic"},
+      "dosage": "500 mg by mouth once daily",
+      "effectivePeriod": {"start": "2025-01-18", "end": "2025-01-24"},
+      "reason": "Acute exacerbation of COPD",
+      "source_doc_id": "NH-1028-05-discharge-summary"
+    }
+  ],
+  "Observation": [
+    {"resourceType": "Observation", "id": "obs-1", "category": "laboratory", "code": {"display": "FEV1"}, "valueQuantity": {"value": 1.08, "unit": "L"}, "referenceRange": "50% predicted", "effectiveDateTime": "2024-10-30", "source_doc_id": "NH-1028-08-progress-note"},
+    {"resourceType": "Observation", "id": "obs-2", "category": "laboratory", "code": {"display": "FEV1"}, "valueQuantity": {"value": 1.02, "unit": "L"}, "referenceRange": "48% predicted", "effectiveDateTime": "2025-04-09", "source_doc_id": "NH-1028-03-progress-note"},
+    {"resourceType": "Observation", "id": "obs-3", "category": "laboratory", "code": {"display": "FEV1"}, "valueQuantity": {"value": 1.14, "unit": "L"}, "referenceRange": "53% predicted", "effectiveDateTime": "2025-08-14", "source_doc_id": "NH-1028-04-progress-note"},
+    {"resourceType": "Observation", "id": "obs-4", "category": "laboratory", "code": {"display": "FEV1/FVC ratio"}, "valueQuantity": {"value": 0.54, "unit": "ratio"}, "referenceRange": ">0.70", "effectiveDateTime": "2025-08-14", "source_doc_id": "NH-1028-04-progress-note"},
+    {"resourceType": "Observation", "id": "obs-5", "category": "vital-signs", "code": {"display": "Oxygen saturation (SpO2)"}, "valueQuantity": {"value": 86, "unit": "%"}, "referenceRange": "room air on admission", "effectiveDateTime": "2025-01-18", "source_doc_id": "NH-1028-05-discharge-summary"},
+    {"resourceType": "Observation", "id": "obs-6", "category": "vital-signs", "code": {"display": "Oxygen saturation (SpO2)"}, "valueQuantity": {"value": 95, "unit": "%"}, "referenceRange": "room air", "effectiveDateTime": "2025-08-14", "source_doc_id": "NH-1028-04-progress-note"},
+    {"resourceType": "Observation", "id": "obs-7", "category": "vital-signs", "code": {"display": "Blood pressure"}, "valueString": "130/80", "unit": "mmHg", "effectiveDateTime": "2025-08-14", "source_doc_id": "NH-1028-04-progress-note"},
+    {"resourceType": "Observation", "id": "obs-8", "category": "vital-signs", "code": {"display": "Body weight"}, "valueQuantity": {"value": 62.4, "unit": "kg"}, "effectiveDateTime": "2025-08-14", "source_doc_id": "NH-1028-04-progress-note"},
+    {"resourceType": "Observation", "id": "obs-9", "category": "social-history", "code": {"display": "Tobacco use"}, "valueString": "Current smoker, 45 pack-years", "effectiveDateTime": "2025-08-14", "source_doc_id": "NH-1028-01-problem-list"}
+  ],
+  "Condition": [
+    {"resourceType": "Condition", "id": "cond-1", "code": {"display": "Chronic obstructive pulmonary disease"}, "clinicalStatus": "active", "onsetDate": "2014", "source_doc_id": "NH-1028-01-problem-list"},
+    {"resourceType": "Condition", "id": "cond-2", "code": {"display": "Tobacco use, current (45 pack-years)"}, "clinicalStatus": "active", "onsetDate": null, "source_doc_id": "NH-1028-01-problem-list"},
+    {"resourceType": "Condition", "id": "cond-3", "code": {"display": "Osteoporosis"}, "clinicalStatus": "active", "onsetDate": "2020", "source_doc_id": "NH-1028-01-problem-list"},
+    {"resourceType": "Condition", "id": "cond-4", "code": {"display": "Acute exacerbation of COPD"}, "clinicalStatus": "resolved", "onsetDate": "2025-01-18", "source_doc_id": "NH-1028-05-discharge-summary"}
+  ]
+}

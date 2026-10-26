@@ -1,0 +1,32 @@
+{
+  "_note": "SYNTHETIC / FICTIONAL structured record for the Northfield Health teaching lab. Simplified FHIR-style, not full FHIR. Not a real patient.",
+  "patient": {"id": "NH-1035", "name": "Marian Hale", "birthDate": "1954-03-18", "gender": "female"},
+  "MedicationStatement": [
+    {
+      "resourceType": "MedicationStatement",
+      "id": "ms-1",
+      "status": "active",
+      "medication": {"display": "Pulmoquin (tiravent) metered inhaler", "class": "long-acting inhaled bronchodilator"},
+      "dosage": "1 inhalation once daily",
+      "effectivePeriod": {"start": "2025-07-21", "end": null},
+      "reason": "COPD maintenance (new start)",
+      "source_doc_id": "NH-1035-03-progress-note"
+    }
+  ],
+  "Observation": [
+    {"resourceType": "Observation", "id": "obs-1", "category": "laboratory", "code": {"display": "FEV1"}, "valueQuantity": {"value": 1.68, "unit": "L"}, "referenceRange": "72% predicted", "effectiveDateTime": "2025-07-21", "source_doc_id": "NH-1035-03-progress-note"},
+    {"resourceType": "Observation", "id": "obs-2", "category": "laboratory", "code": {"display": "FEV1/FVC ratio"}, "valueQuantity": {"value": 0.64, "unit": "ratio"}, "referenceRange": ">0.70", "effectiveDateTime": "2025-07-21", "source_doc_id": "NH-1035-03-progress-note"},
+    {"resourceType": "Observation", "id": "obs-3", "category": "laboratory", "code": {"display": "Creatinine"}, "valueQuantity": {"value": 0.9, "unit": "mg/dL"}, "referenceRange": "0.6-1.2 mg/dL", "effectiveDateTime": "2025-06-02", "source_doc_id": "NH-1035-05-consult-note"},
+    {"resourceType": "Observation", "id": "obs-4", "category": "laboratory", "code": {"display": "Potassium"}, "valueQuantity": {"value": 4.2, "unit": "mmol/L"}, "referenceRange": "3.5-5.1 mmol/L", "effectiveDateTime": "2025-06-02", "source_doc_id": "NH-1035-05-consult-note"},
+    {"resourceType": "Observation", "id": "obs-5", "category": "vital-signs", "code": {"display": "Blood pressure"}, "valueString": "146/88", "unit": "mmHg", "effectiveDateTime": "2025-06-02", "source_doc_id": "NH-1035-05-consult-note"},
+    {"resourceType": "Observation", "id": "obs-6", "category": "vital-signs", "code": {"display": "Blood pressure"}, "valueString": "138/86", "unit": "mmHg", "effectiveDateTime": "2025-07-21", "source_doc_id": "NH-1035-03-progress-note"},
+    {"resourceType": "Observation", "id": "obs-7", "category": "vital-signs", "code": {"display": "Oxygen saturation (SpO2)"}, "valueQuantity": {"value": 96, "unit": "%"}, "referenceRange": "room air", "effectiveDateTime": "2025-07-21", "source_doc_id": "NH-1035-03-progress-note"},
+    {"resourceType": "Observation", "id": "obs-8", "category": "vital-signs", "code": {"display": "Body weight"}, "valueQuantity": {"value": 70.3, "unit": "kg"}, "effectiveDateTime": "2025-07-21", "source_doc_id": "NH-1035-03-progress-note"},
+    {"resourceType": "Observation", "id": "obs-9", "category": "social-history", "code": {"display": "Tobacco use"}, "valueString": "Former smoker, 30 pack-years, quit 2016", "effectiveDateTime": "2025-07-21", "source_doc_id": "NH-1035-01-problem-list"}
+  ],
+  "Condition": [
+    {"resourceType": "Condition", "id": "cond-1", "code": {"display": "Chronic obstructive pulmonary disease"}, "clinicalStatus": "active", "onsetDate": "2019", "source_doc_id": "NH-1035-01-problem-list"},
+    {"resourceType": "Condition", "id": "cond-2", "code": {"display": "Hypertension"}, "clinicalStatus": "active", "onsetDate": "2017", "source_doc_id": "NH-1035-01-problem-list"},
+    {"resourceType": "Condition", "id": "cond-3", "code": {"display": "Acute viral bronchitis"}, "clinicalStatus": "resolved", "onsetDate": "2024-12-02", "source_doc_id": "NH-1035-06-discharge-summary"}
+  ]
+}

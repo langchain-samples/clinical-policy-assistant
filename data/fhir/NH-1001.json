@@ -1,0 +1,69 @@
+{
+  "_note": "SYNTHETIC / FICTIONAL structured record for the Northfield Health teaching lab. Simplified FHIR-style, not full FHIR. Not a real patient.",
+  "patient": {"id": "NH-1001", "name": "Edwin Talmadge", "birthDate": "1957-02-11", "gender": "male"},
+  "MedicationStatement": [
+    {
+      "resourceType": "MedicationStatement",
+      "id": "ms-1",
+      "status": "active",
+      "medication": {"display": "Glucentra (senaglim) 20 mg tablet", "class": "glucose-lowering agent"},
+      "dosage": "20 mg by mouth once daily",
+      "effectivePeriod": {"start": "2025-05-14", "end": null},
+      "reason": "Type 2 diabetes mellitus; dose increased from 10 mg because A1c rose to 7.9%",
+      "source_doc_id": "NH-1001-05-progress-note"
+    },
+    {
+      "resourceType": "MedicationStatement",
+      "id": "ms-2",
+      "status": "stopped",
+      "medication": {"display": "Glucentra (senaglim) 10 mg tablet", "class": "glucose-lowering agent"},
+      "dosage": "10 mg by mouth once daily",
+      "effectivePeriod": {"start": "2018-01-01", "end": "2025-05-14"},
+      "reason": "Type 2 diabetes mellitus; replaced by 20 mg dose",
+      "source_doc_id": "NH-1001-02-progress-note"
+    },
+    {
+      "resourceType": "MedicationStatement",
+      "id": "ms-3",
+      "status": "active",
+      "medication": {"display": "Alvexora (namilovir) 20 mg tablet", "class": "glimmerase modulator"},
+      "dosage": "20 mg by mouth once daily with food",
+      "effectivePeriod": {"start": "2020-01-01", "end": null},
+      "reason": "Chronic glimmerase deficiency",
+      "source_doc_id": "NH-1001-04-medication-list"
+    },
+    {
+      "resourceType": "MedicationStatement",
+      "id": "ms-4",
+      "status": "active",
+      "medication": {"display": "Nephravant (fusorel) 20 mg tablet", "class": "diuretic"},
+      "dosage": "20 mg by mouth once daily",
+      "effectivePeriod": {"start": "2025-06-18", "end": null},
+      "reason": "Ankle edema and blood pressure (started by Nephrology)",
+      "source_doc_id": "NH-1001-03-consult-note"
+    }
+  ],
+  "Observation": [
+    {"resourceType": "Observation", "id": "obs-1", "category": "laboratory", "code": {"display": "Creatinine"}, "valueQuantity": {"value": 1.38, "unit": "mg/dL"}, "referenceRange": "0.6-1.2 mg/dL", "effectiveDateTime": "2025-02-12", "source_doc_id": "NH-1001-02-progress-note"},
+    {"resourceType": "Observation", "id": "obs-2", "category": "laboratory", "code": {"display": "eGFR"}, "valueQuantity": {"value": 52, "unit": "mL/min/1.73m2"}, "referenceRange": ">60 mL/min/1.73m2", "effectiveDateTime": "2025-02-12", "source_doc_id": "NH-1001-02-progress-note"},
+    {"resourceType": "Observation", "id": "obs-3", "category": "laboratory", "code": {"display": "Hemoglobin A1c"}, "valueQuantity": {"value": 7.4, "unit": "%"}, "referenceRange": "<5.7%", "effectiveDateTime": "2025-02-12", "source_doc_id": "NH-1001-02-progress-note"},
+    {"resourceType": "Observation", "id": "obs-4", "category": "laboratory", "code": {"display": "Creatinine"}, "valueQuantity": {"value": 1.46, "unit": "mg/dL"}, "referenceRange": "0.6-1.2 mg/dL", "effectiveDateTime": "2025-05-14", "source_doc_id": "NH-1001-05-progress-note"},
+    {"resourceType": "Observation", "id": "obs-5", "category": "laboratory", "code": {"display": "eGFR"}, "valueQuantity": {"value": 49, "unit": "mL/min/1.73m2"}, "referenceRange": ">60 mL/min/1.73m2", "effectiveDateTime": "2025-05-14", "source_doc_id": "NH-1001-05-progress-note"},
+    {"resourceType": "Observation", "id": "obs-6", "category": "laboratory", "code": {"display": "Hemoglobin A1c"}, "valueQuantity": {"value": 7.9, "unit": "%"}, "referenceRange": "<5.7%", "effectiveDateTime": "2025-05-14", "source_doc_id": "NH-1001-05-progress-note"},
+    {"resourceType": "Observation", "id": "obs-7", "category": "laboratory", "code": {"display": "Creatinine"}, "valueQuantity": {"value": 1.49, "unit": "mg/dL"}, "referenceRange": "0.6-1.2 mg/dL", "effectiveDateTime": "2025-06-18", "source_doc_id": "NH-1001-03-consult-note"},
+    {"resourceType": "Observation", "id": "obs-8", "category": "laboratory", "code": {"display": "eGFR"}, "valueQuantity": {"value": 47, "unit": "mL/min/1.73m2"}, "referenceRange": ">60 mL/min/1.73m2", "effectiveDateTime": "2025-06-18", "source_doc_id": "NH-1001-03-consult-note"},
+    {"resourceType": "Observation", "id": "obs-9", "category": "laboratory", "code": {"display": "Creatinine"}, "valueQuantity": {"value": 1.52, "unit": "mg/dL"}, "referenceRange": "0.6-1.2 mg/dL", "effectiveDateTime": "2025-08-20", "source_doc_id": "NH-1001-07-progress-note"},
+    {"resourceType": "Observation", "id": "obs-10", "category": "laboratory", "code": {"display": "eGFR"}, "valueQuantity": {"value": 46, "unit": "mL/min/1.73m2"}, "referenceRange": ">60 mL/min/1.73m2", "effectiveDateTime": "2025-08-20", "source_doc_id": "NH-1001-07-progress-note"},
+    {"resourceType": "Observation", "id": "obs-11", "category": "laboratory", "code": {"display": "Hemoglobin A1c"}, "valueQuantity": {"value": 7.2, "unit": "%"}, "referenceRange": "<5.7%", "effectiveDateTime": "2025-08-20", "source_doc_id": "NH-1001-07-progress-note"},
+    {"resourceType": "Observation", "id": "obs-12", "category": "vital-signs", "code": {"display": "Blood pressure"}, "valueString": "142/86", "unit": "mmHg", "effectiveDateTime": "2025-08-20", "source_doc_id": "NH-1001-06-nursing-note"},
+    {"resourceType": "Observation", "id": "obs-13", "category": "vital-signs", "code": {"display": "Heart rate"}, "valueQuantity": {"value": 78, "unit": "bpm"}, "effectiveDateTime": "2025-08-20", "source_doc_id": "NH-1001-06-nursing-note"},
+    {"resourceType": "Observation", "id": "obs-14", "category": "vital-signs", "code": {"display": "Body weight"}, "valueQuantity": {"value": 94.2, "unit": "kg"}, "effectiveDateTime": "2025-08-20", "source_doc_id": "NH-1001-06-nursing-note"}
+  ],
+  "Condition": [
+    {"resourceType": "Condition", "id": "cond-1", "code": {"display": "Hypertension"}, "clinicalStatus": "active", "onsetDate": "2015-01-01", "source_doc_id": "NH-1001-01-problem-list"},
+    {"resourceType": "Condition", "id": "cond-2", "code": {"display": "Type 2 diabetes mellitus"}, "clinicalStatus": "active", "onsetDate": "2018-01-01", "source_doc_id": "NH-1001-01-problem-list"},
+    {"resourceType": "Condition", "id": "cond-3", "code": {"display": "Chronic glimmerase deficiency"}, "clinicalStatus": "active", "onsetDate": "2020-01-01", "source_doc_id": "NH-1001-01-problem-list"},
+    {"resourceType": "Condition", "id": "cond-4", "code": {"display": "Chronic kidney disease, stage 3a"}, "clinicalStatus": "active", "onsetDate": "2023-01-01", "source_doc_id": "NH-1001-01-problem-list"},
+    {"resourceType": "Condition", "id": "cond-5", "code": {"display": "Orthostatic dizziness with dehydration after gastrointestinal viral illness"}, "clinicalStatus": "resolved", "onsetDate": "2024-11-01", "source_doc_id": "NH-1001-08-discharge-summary"}
+  ]
+}

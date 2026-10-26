@@ -25,3 +25,13 @@ __pycache__/
 
 # OS
 .DS_Store
+
+# Workshop local state
+.scratch/
+.chroma/
+*.sqlite3
+PLAN.md
+
+# Facilitator-only docs (kept local, not pushed)
+FACILITATOR.md
+DAY2.md

@@ -1,0 +1,77 @@
+{
+  "_note": "SYNTHETIC / FICTIONAL structured record for the Northfield Health teaching lab. Simplified FHIR-style, not full FHIR. Not a real patient.",
+  "patient": {"id": "NH-1004", "name": "Lorna Effingham", "birthDate": "1950-09-23", "gender": "female"},
+  "MedicationStatement": [
+    {
+      "resourceType": "MedicationStatement",
+      "id": "ms-1",
+      "status": "active",
+      "medication": {"display": "Nephravant (fusorel) 40 mg tablet", "class": "diuretic"},
+      "dosage": "40 mg by mouth once daily",
+      "effectivePeriod": {"start": null, "end": null},
+      "reason": "Heart failure with preserved ejection fraction",
+      "source_doc_id": "NH-1004-08-medication-list"
+    },
+    {
+      "resourceType": "MedicationStatement",
+      "id": "ms-2",
+      "status": "active",
+      "medication": {"display": "Cardioryn (vexagrel) 75 mg capsule", "class": "antiplatelet"},
+      "dosage": "75 mg by mouth once daily",
+      "effectivePeriod": {"start": null, "end": null},
+      "reason": "Antiplatelet therapy (home medication)",
+      "source_doc_id": "NH-1004-08-medication-list"
+    },
+    {
+      "resourceType": "MedicationStatement",
+      "id": "ms-3",
+      "status": "active",
+      "medication": {"display": "Brevamistol (lufezamide) dry-powder inhaler", "class": "maintenance inhaled bronchodilator"},
+      "dosage": "1 inhalation twice daily",
+      "effectivePeriod": {"start": null, "end": null},
+      "reason": "COPD",
+      "source_doc_id": "NH-1004-08-medication-list"
+    },
+    {
+      "resourceType": "MedicationStatement",
+      "id": "ms-4",
+      "status": "completed",
+      "medication": {"display": "Myrexatin (tavoxine) 1 g IV", "class": "antibiotic"},
+      "dosage": "1 g IV every 12 hours",
+      "effectivePeriod": {"start": "2025-05-04", "end": "2025-05-09"},
+      "reason": "Community-acquired pneumonia, right lower lobe",
+      "source_doc_id": "NH-1004-02-progress-note"
+    },
+    {
+      "resourceType": "MedicationStatement",
+      "id": "ms-5",
+      "status": "active",
+      "medication": {"display": "Myrexatin (tavoxine) 500 mg tablet", "class": "antibiotic"},
+      "dosage": "500 mg by mouth twice daily for 5 more days",
+      "effectivePeriod": {"start": "2025-05-09", "end": null},
+      "reason": "Community-acquired pneumonia, right lower lobe (oral step-down)",
+      "source_doc_id": "NH-1004-07-discharge-summary"
+    }
+  ],
+  "Observation": [
+    {"resourceType": "Observation", "id": "obs-1", "category": "laboratory", "code": {"display": "WBC"}, "valueQuantity": {"value": 14.8, "unit": "x10^9/L"}, "referenceRange": "4.0-11.0 x10^9/L", "effectiveDateTime": "2025-05-04", "source_doc_id": "NH-1004-02-progress-note"},
+    {"resourceType": "Observation", "id": "obs-2", "category": "laboratory", "code": {"display": "Creatinine"}, "valueQuantity": {"value": 1.0, "unit": "mg/dL"}, "referenceRange": "0.6-1.2 mg/dL", "effectiveDateTime": "2025-05-04", "source_doc_id": "NH-1004-02-progress-note"},
+    {"resourceType": "Observation", "id": "obs-3", "category": "laboratory", "code": {"display": "Potassium"}, "valueQuantity": {"value": 4.1, "unit": "mmol/L"}, "referenceRange": "3.5-5.1 mmol/L", "effectiveDateTime": "2025-05-04", "source_doc_id": "NH-1004-02-progress-note"},
+    {"resourceType": "Observation", "id": "obs-4", "category": "laboratory", "code": {"display": "Potassium"}, "valueQuantity": {"value": 3.6, "unit": "mmol/L"}, "referenceRange": "3.5-5.1 mmol/L", "effectiveDateTime": "2025-05-06", "source_doc_id": "NH-1004-04-nursing-note"},
+    {"resourceType": "Observation", "id": "obs-5", "category": "vital-signs", "code": {"display": "Blood pressure (lowest after medication event)"}, "valueString": "108/64", "unit": "mmHg", "effectiveDateTime": "2025-05-06", "source_doc_id": "NH-1004-04-nursing-note"},
+    {"resourceType": "Observation", "id": "obs-6", "category": "laboratory", "code": {"display": "WBC"}, "valueQuantity": {"value": 9.6, "unit": "x10^9/L"}, "referenceRange": "4.0-11.0 x10^9/L", "effectiveDateTime": "2025-05-07", "source_doc_id": "NH-1004-05-progress-note"},
+    {"resourceType": "Observation", "id": "obs-7", "category": "laboratory", "code": {"display": "Creatinine"}, "valueQuantity": {"value": 1.1, "unit": "mg/dL"}, "referenceRange": "0.6-1.2 mg/dL", "effectiveDateTime": "2025-05-07", "source_doc_id": "NH-1004-05-progress-note"},
+    {"resourceType": "Observation", "id": "obs-8", "category": "laboratory", "code": {"display": "Potassium"}, "valueQuantity": {"value": 3.8, "unit": "mmol/L"}, "referenceRange": "3.5-5.1 mmol/L", "effectiveDateTime": "2025-05-07", "source_doc_id": "NH-1004-05-progress-note"},
+    {"resourceType": "Observation", "id": "obs-9", "category": "vital-signs", "code": {"display": "Oxygen saturation"}, "valueQuantity": {"value": 93, "unit": "% on room air"}, "referenceRange": "92-100 %", "effectiveDateTime": "2025-05-07", "source_doc_id": "NH-1004-05-progress-note"},
+    {"resourceType": "Observation", "id": "obs-10", "category": "laboratory", "code": {"display": "Creatinine"}, "valueQuantity": {"value": 1.0, "unit": "mg/dL"}, "referenceRange": "0.6-1.2 mg/dL", "effectiveDateTime": "2025-05-09", "source_doc_id": "NH-1004-07-discharge-summary"},
+    {"resourceType": "Observation", "id": "obs-11", "category": "laboratory", "code": {"display": "Potassium"}, "valueQuantity": {"value": 4.0, "unit": "mmol/L"}, "referenceRange": "3.5-5.1 mmol/L", "effectiveDateTime": "2025-05-09", "source_doc_id": "NH-1004-07-discharge-summary"},
+    {"resourceType": "Observation", "id": "obs-12", "category": "laboratory", "code": {"display": "WBC"}, "valueQuantity": {"value": 8.1, "unit": "x10^9/L"}, "referenceRange": "4.0-11.0 x10^9/L", "effectiveDateTime": "2025-05-09", "source_doc_id": "NH-1004-07-discharge-summary"},
+    {"resourceType": "Observation", "id": "obs-13", "category": "vital-signs", "code": {"display": "Blood pressure"}, "valueString": "124/72", "unit": "mmHg", "effectiveDateTime": "2025-05-09", "source_doc_id": "NH-1004-07-discharge-summary"},
+    {"resourceType": "Observation", "id": "obs-14", "category": "vital-signs", "code": {"display": "Body weight"}, "valueQuantity": {"value": 70.4, "unit": "kg"}, "referenceRange": null, "effectiveDateTime": "2025-05-09", "source_doc_id": "NH-1004-07-discharge-summary"}
+  ],
+  "Condition": [
+    {"resourceType": "Condition", "id": "cond-1", "code": {"display": "Community-acquired pneumonia, right lower lobe"}, "clinicalStatus": "resolved", "onsetDate": "2025-05-04", "source_doc_id": "NH-1004-07-discharge-summary"},
+    {"resourceType": "Condition", "id": "cond-2", "code": {"display": "Heart failure with preserved ejection fraction"}, "clinicalStatus": "active", "onsetDate": "2021", "source_doc_id": "NH-1004-01-problem-list"},
+    {"resourceType": "Condition", "id": "cond-3", "code": {"display": "Chronic obstructive pulmonary disease"}, "clinicalStatus": "active", "onsetDate": "2017", "source_doc_id": "NH-1004-01-problem-list"}
+  ]
+}
