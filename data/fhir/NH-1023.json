@@ -1,0 +1,76 @@
+{
+  "_note": "SYNTHETIC / FICTIONAL structured record for the Northfield Health teaching lab. Simplified FHIR-style, not full FHIR. Not a real patient.",
+  "patient": {"id": "NH-1023", "name": "Harlan Brisco", "birthDate": "1944-07-19", "gender": "male"},
+  "MedicationStatement": [
+    {
+      "resourceType": "MedicationStatement",
+      "id": "ms-1",
+      "status": "active",
+      "medication": {"display": "Nephravant (fusorel) 40 mg tablet", "class": "diuretic"},
+      "dosage": "40 mg by mouth once daily",
+      "effectivePeriod": {"start": "2025-09-06", "end": null},
+      "reason": "Heart failure with reduced ejection fraction; maintenance diuretic after exacerbation",
+      "source_doc_id": "NH-1023-09-discharge-summary"
+    },
+    {
+      "resourceType": "MedicationStatement",
+      "id": "ms-2",
+      "status": "active",
+      "medication": {"display": "Cardioryn (vexagrel) 75 mg capsule", "class": "antiplatelet"},
+      "dosage": "75 mg by mouth once daily",
+      "effectivePeriod": {"start": "2017-10-05", "end": null},
+      "reason": "Coronary artery disease",
+      "source_doc_id": "NH-1023-10-medication-list"
+    },
+    {
+      "resourceType": "MedicationStatement",
+      "id": "ms-3",
+      "status": "completed",
+      "medication": {"display": "Nephravant (fusorel) injection", "class": "diuretic"},
+      "dosage": "40 mg IV twice daily (one additional 40 mg IV dose given 2025-09-04 at 02:15)",
+      "effectivePeriod": {"start": "2025-09-02", "end": "2025-09-05"},
+      "reason": "Acute on chronic heart failure exacerbation with volume overload",
+      "source_doc_id": "NH-1023-02-progress-note"
+    },
+    {
+      "resourceType": "MedicationStatement",
+      "id": "ms-4",
+      "status": "stopped",
+      "medication": {"display": "Nephravant (fusorel) 20 mg tablet", "class": "diuretic"},
+      "dosage": "20 mg by mouth once daily",
+      "effectivePeriod": {"start": "2019-06-01", "end": "2025-09-02"},
+      "reason": "Heart failure with reduced ejection fraction (prior home dose)",
+      "source_doc_id": "NH-1023-10-medication-list"
+    }
+  ],
+  "Observation": [
+    {"resourceType": "Observation", "id": "obs-1", "category": "vital-signs", "code": {"display": "Blood pressure"}, "valueString": "152/94", "unit": "mmHg", "effectiveDateTime": "2025-09-02", "source_doc_id": "NH-1023-02-progress-note"},
+    {"resourceType": "Observation", "id": "obs-2", "category": "vital-signs", "code": {"display": "Oxygen saturation (room air)"}, "valueQuantity": {"value": 91, "unit": "%"}, "effectiveDateTime": "2025-09-02", "source_doc_id": "NH-1023-02-progress-note"},
+    {"resourceType": "Observation", "id": "obs-3", "category": "vital-signs", "code": {"display": "Body weight"}, "valueQuantity": {"value": 88.4, "unit": "kg"}, "effectiveDateTime": "2025-09-02", "source_doc_id": "NH-1023-02-progress-note"},
+    {"resourceType": "Observation", "id": "obs-4", "category": "laboratory", "code": {"display": "B-type natriuretic peptide"}, "valueQuantity": {"value": 1480, "unit": "pg/mL"}, "referenceRange": "0-100 pg/mL", "effectiveDateTime": "2025-09-02", "source_doc_id": "NH-1023-02-progress-note"},
+    {"resourceType": "Observation", "id": "obs-5", "category": "laboratory", "code": {"display": "Creatinine"}, "valueQuantity": {"value": 1.3, "unit": "mg/dL"}, "referenceRange": "0.7-1.3 mg/dL", "effectiveDateTime": "2025-09-02", "source_doc_id": "NH-1023-02-progress-note"},
+    {"resourceType": "Observation", "id": "obs-6", "category": "laboratory", "code": {"display": "Potassium"}, "valueQuantity": {"value": 4.2, "unit": "mmol/L"}, "referenceRange": "3.5-5.1 mmol/L", "effectiveDateTime": "2025-09-02", "source_doc_id": "NH-1023-02-progress-note"},
+    {"resourceType": "Observation", "id": "obs-7", "category": "laboratory", "code": {"display": "Sodium"}, "valueQuantity": {"value": 136, "unit": "mmol/L"}, "referenceRange": "135-145 mmol/L", "effectiveDateTime": "2025-09-02", "source_doc_id": "NH-1023-02-progress-note"},
+    {"resourceType": "Observation", "id": "obs-8", "category": "laboratory", "code": {"display": "Creatinine"}, "valueQuantity": {"value": 1.3, "unit": "mg/dL"}, "referenceRange": "0.7-1.3 mg/dL", "effectiveDateTime": "2025-09-03", "source_doc_id": "NH-1023-08-consult-note"},
+    {"resourceType": "Observation", "id": "obs-9", "category": "laboratory", "code": {"display": "Potassium"}, "valueQuantity": {"value": 4.1, "unit": "mmol/L"}, "referenceRange": "3.5-5.1 mmol/L", "effectiveDateTime": "2025-09-03", "source_doc_id": "NH-1023-08-consult-note"},
+    {"resourceType": "Observation", "id": "obs-10", "category": "vital-signs", "code": {"display": "Oxygen saturation (room air)"}, "valueQuantity": {"value": 88, "unit": "%"}, "effectiveDateTime": "2025-09-04", "note": "02:00 overnight episode; placed on 2 L nasal cannula", "source_doc_id": "NH-1023-04-nursing-note"},
+    {"resourceType": "Observation", "id": "obs-11", "category": "vital-signs", "code": {"display": "Body weight"}, "valueQuantity": {"value": 87.3, "unit": "kg"}, "effectiveDateTime": "2025-09-04", "source_doc_id": "NH-1023-03-progress-note"},
+    {"resourceType": "Observation", "id": "obs-12", "category": "laboratory", "code": {"display": "Creatinine"}, "valueQuantity": {"value": 1.4, "unit": "mg/dL"}, "referenceRange": "0.7-1.3 mg/dL", "effectiveDateTime": "2025-09-04", "source_doc_id": "NH-1023-03-progress-note"},
+    {"resourceType": "Observation", "id": "obs-13", "category": "laboratory", "code": {"display": "Potassium"}, "valueQuantity": {"value": 3.9, "unit": "mmol/L"}, "referenceRange": "3.5-5.1 mmol/L", "effectiveDateTime": "2025-09-04", "source_doc_id": "NH-1023-03-progress-note"},
+    {"resourceType": "Observation", "id": "obs-14", "category": "vital-signs", "code": {"display": "Oxygen saturation (2 L nasal cannula)"}, "valueQuantity": {"value": 90, "unit": "%"}, "effectiveDateTime": "2025-09-05", "note": "01:30 overnight orthopnea episode; increased to 3 L nasal cannula", "source_doc_id": "NH-1023-06-nursing-note"},
+    {"resourceType": "Observation", "id": "obs-15", "category": "vital-signs", "code": {"display": "Body weight"}, "valueQuantity": {"value": 86.0, "unit": "kg"}, "effectiveDateTime": "2025-09-05", "source_doc_id": "NH-1023-07-nursing-note"},
+    {"resourceType": "Observation", "id": "obs-16", "category": "vital-signs", "code": {"display": "Oxygen saturation (room air)"}, "valueQuantity": {"value": 93, "unit": "%"}, "effectiveDateTime": "2025-09-05", "source_doc_id": "NH-1023-07-nursing-note"},
+    {"resourceType": "Observation", "id": "obs-17", "category": "laboratory", "code": {"display": "Creatinine"}, "valueQuantity": {"value": 1.4, "unit": "mg/dL"}, "referenceRange": "0.7-1.3 mg/dL", "effectiveDateTime": "2025-09-06", "source_doc_id": "NH-1023-09-discharge-summary"},
+    {"resourceType": "Observation", "id": "obs-18", "category": "laboratory", "code": {"display": "Potassium"}, "valueQuantity": {"value": 4.0, "unit": "mmol/L"}, "referenceRange": "3.5-5.1 mmol/L", "effectiveDateTime": "2025-09-06", "source_doc_id": "NH-1023-09-discharge-summary"},
+    {"resourceType": "Observation", "id": "obs-19", "category": "vital-signs", "code": {"display": "Body weight"}, "valueQuantity": {"value": 84.8, "unit": "kg"}, "effectiveDateTime": "2025-09-06", "source_doc_id": "NH-1023-09-discharge-summary"},
+    {"resourceType": "Observation", "id": "obs-20", "category": "vital-signs", "code": {"display": "Blood pressure"}, "valueString": "122/72", "unit": "mmHg", "effectiveDateTime": "2025-09-06", "source_doc_id": "NH-1023-09-discharge-summary"},
+    {"resourceType": "Observation", "id": "obs-21", "category": "vital-signs", "code": {"display": "Oxygen saturation (room air)"}, "valueQuantity": {"value": 94, "unit": "%"}, "effectiveDateTime": "2025-09-06", "source_doc_id": "NH-1023-09-discharge-summary"}
+  ],
+  "Condition": [
+    {"resourceType": "Condition", "id": "cond-1", "code": {"display": "Heart failure with reduced ejection fraction (ischemic cardiomyopathy)"}, "clinicalStatus": "active", "onsetDate": "2019-01-01", "source_doc_id": "NH-1023-01-problem-list"},
+    {"resourceType": "Condition", "id": "cond-2", "code": {"display": "Acute on chronic heart failure exacerbation"}, "clinicalStatus": "resolved", "onsetDate": "2025-09-02", "abatementDate": "2025-09-06", "source_doc_id": "NH-1023-09-discharge-summary"},
+    {"resourceType": "Condition", "id": "cond-3", "code": {"display": "Coronary artery disease"}, "clinicalStatus": "active", "onsetDate": "2017-01-01", "source_doc_id": "NH-1023-01-problem-list"},
+    {"resourceType": "Condition", "id": "cond-4", "code": {"display": "Hypertension"}, "clinicalStatus": "active", "onsetDate": "2010-01-01", "source_doc_id": "NH-1023-01-problem-list"}
+  ],
+  "codeStatus": {"value": "DNR/DNI", "recordedDate": "2025-09-02", "source_doc_id": "NH-1023-02-progress-note"}
+}

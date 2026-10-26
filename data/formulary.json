@@ -1,0 +1,17 @@
+{
+  "_note": "SYNTHETIC / FICTIONAL formulary for the Northfield Health chart Q&A teaching lab. Every medication name, class and strength is invented. These are not real drugs and not real doses. Not clinical guidance.",
+  "alvexora": {"brand": "Alvexora", "generic": "namilovir", "class": "glimmerase modulator", "route": "oral tablet"},
+  "brevamistol": {"brand": "Brevamistol", "generic": "lufezamide", "class": "maintenance inhaled bronchodilator", "route": "dry-powder inhaler"},
+  "cardioryn": {"brand": "Cardioryn", "generic": "vexagrel", "class": "antiplatelet", "route": "oral capsule"},
+  "dermasolix": {"brand": "Dermasolix", "generic": "quazoderm", "class": "topical anti-inflammatory", "route": "topical cream"},
+  "elmurestat": {"brand": "Elmurestat", "generic": "sovalanib", "class": "lumenitis immunomodulator", "route": "subcutaneous injection"},
+  "thrombelix": {"brand": "Thrombelix", "generic": "trelavant", "class": "anticoagulant", "route": "oral tablet"},
+  "coagulor": {"brand": "Coagulor", "generic": "norvadine", "class": "anticoagulant", "route": "oral tablet"},
+  "nephravant": {"brand": "Nephravant", "generic": "fusorel", "class": "diuretic", "route": "oral tablet or IV"},
+  "glucentra": {"brand": "Glucentra", "generic": "senaglim", "class": "glucose-lowering agent", "route": "oral tablet"},
+  "pulmoquin": {"brand": "Pulmoquin", "generic": "tiravent", "class": "long-acting inhaled bronchodilator", "route": "metered inhaler"},
+  "myrexatin": {"brand": "Myrexatin", "generic": "tavoxine", "class": "antibiotic", "route": "IV or oral"},
+  "quinavort": {"brand": "Quinavort", "generic": "selvoxin", "class": "antibiotic", "route": "oral tablet"},
+  "somnurel": {"brand": "Somnurel", "generic": "dormacet", "class": "sleep aid", "route": "oral tablet"},
+  "kalibind": {"brand": "Kalibind", "generic": "polysorbex", "class": "potassium binder", "route": "oral powder"}
+}

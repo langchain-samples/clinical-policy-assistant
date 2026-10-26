@@ -1,0 +1,52 @@
+{
+  "_note": "SYNTHETIC / FICTIONAL structured record for the Northfield Health teaching lab. Simplified FHIR-style, not full FHIR. Not a real patient.",
+  "patient": {"id": "NH-1017", "name": "Corinne Abernathy", "birthDate": "1959-12-05", "gender": "female"},
+  "MedicationStatement": [
+    {
+      "resourceType": "MedicationStatement",
+      "id": "ms-1",
+      "status": "active",
+      "medication": {"display": "Thrombelix (trelavant) 5 mg tablet", "class": "anticoagulant"},
+      "dosage": "5 mg by mouth twice daily",
+      "effectivePeriod": {"start": "2023-04-11", "end": null},
+      "reason": "Atrial fibrillation",
+      "source_doc_id": "NH-1017-02-medication-list"
+    },
+    {
+      "resourceType": "MedicationStatement",
+      "id": "ms-2",
+      "status": "active",
+      "medication": {"display": "Nephravant (fusorel) 20 mg tablet", "class": "diuretic"},
+      "dosage": "20 mg by mouth once daily",
+      "effectivePeriod": {"start": "2022-08-15", "end": null},
+      "reason": "Hypertension",
+      "source_doc_id": "NH-1017-02-medication-list"
+    }
+  ],
+  "Observation": [
+    {"resourceType": "Observation", "id": "obs-1", "category": "vital-signs", "code": {"display": "Heart rate"}, "valueQuantity": {"value": 82, "unit": "beats/min"}, "referenceRange": "60-100 beats/min", "effectiveDateTime": "2024-12-10", "source_doc_id": "NH-1017-04-progress-note"},
+    {"resourceType": "Observation", "id": "obs-2", "category": "vital-signs", "code": {"display": "Blood pressure"}, "valueString": "134/82", "unit": "mmHg", "effectiveDateTime": "2024-12-10", "source_doc_id": "NH-1017-04-progress-note"},
+    {"resourceType": "Observation", "id": "obs-3", "category": "vital-signs", "code": {"display": "Heart rate"}, "valueQuantity": {"value": 104, "unit": "beats/min"}, "referenceRange": "60-100 beats/min", "effectiveDateTime": "2025-03-05", "source_doc_id": "NH-1017-03-progress-note"},
+    {"resourceType": "Observation", "id": "obs-4", "category": "vital-signs", "code": {"display": "Blood pressure"}, "valueString": "138/84", "unit": "mmHg", "effectiveDateTime": "2025-03-05", "source_doc_id": "NH-1017-03-progress-note"},
+    {"resourceType": "Observation", "id": "obs-5", "category": "vital-signs", "code": {"display": "Heart rate"}, "valueQuantity": {"value": 138, "unit": "beats/min"}, "referenceRange": "60-100 beats/min", "effectiveDateTime": "2025-06-08", "source_doc_id": "NH-1017-05-consult-note"},
+    {"resourceType": "Observation", "id": "obs-6", "category": "laboratory", "code": {"display": "Potassium"}, "valueQuantity": {"value": 4.0, "unit": "mmol/L"}, "referenceRange": "3.5-5.1 mmol/L", "effectiveDateTime": "2025-06-08", "source_doc_id": "NH-1017-06-discharge-summary"},
+    {"resourceType": "Observation", "id": "obs-7", "category": "laboratory", "code": {"display": "Potassium"}, "valueQuantity": {"value": 3.7, "unit": "mmol/L"}, "referenceRange": "3.5-5.1 mmol/L", "effectiveDateTime": "2025-06-09", "source_doc_id": "NH-1017-06-discharge-summary"},
+    {"resourceType": "Observation", "id": "obs-8", "category": "laboratory", "code": {"display": "Potassium"}, "valueQuantity": {"value": 3.5, "unit": "mmol/L"}, "referenceRange": "3.5-5.1 mmol/L", "effectiveDateTime": "2025-06-10", "source_doc_id": "NH-1017-06-discharge-summary"},
+    {"resourceType": "Observation", "id": "obs-9", "category": "laboratory", "code": {"display": "Potassium"}, "valueQuantity": {"value": 3.3, "unit": "mmol/L"}, "referenceRange": "3.5-5.1 mmol/L", "effectiveDateTime": "2025-06-11", "source_doc_id": "NH-1017-06-discharge-summary"},
+    {"resourceType": "Observation", "id": "obs-10", "category": "laboratory", "code": {"display": "Potassium"}, "valueQuantity": {"value": 3.8, "unit": "mmol/L"}, "referenceRange": "3.5-5.1 mmol/L", "effectiveDateTime": "2025-06-12", "source_doc_id": "NH-1017-06-discharge-summary"},
+    {"resourceType": "Observation", "id": "obs-11", "category": "laboratory", "code": {"display": "Potassium"}, "valueQuantity": {"value": 4.1, "unit": "mmol/L"}, "referenceRange": "3.5-5.1 mmol/L", "effectiveDateTime": "2025-06-13", "source_doc_id": "NH-1017-06-discharge-summary"},
+    {"resourceType": "Observation", "id": "obs-12", "category": "laboratory", "code": {"display": "Creatinine"}, "valueQuantity": {"value": 1.1, "unit": "mg/dL"}, "referenceRange": "0.6-1.2 mg/dL", "effectiveDateTime": "2025-06-08", "source_doc_id": "NH-1017-06-discharge-summary"},
+    {"resourceType": "Observation", "id": "obs-13", "category": "laboratory", "code": {"display": "Creatinine"}, "valueQuantity": {"value": 1.2, "unit": "mg/dL"}, "referenceRange": "0.6-1.2 mg/dL", "effectiveDateTime": "2025-06-13", "source_doc_id": "NH-1017-06-discharge-summary"},
+    {"resourceType": "Observation", "id": "obs-14", "category": "laboratory", "code": {"display": "Magnesium"}, "valueQuantity": {"value": 2.1, "unit": "mg/dL"}, "referenceRange": "1.7-2.2 mg/dL", "effectiveDateTime": "2025-06-13", "source_doc_id": "NH-1017-06-discharge-summary"},
+    {"resourceType": "Observation", "id": "obs-15", "category": "laboratory", "code": {"display": "Hemoglobin"}, "valueQuantity": {"value": 13.0, "unit": "g/dL"}, "referenceRange": "12.0-15.5 g/dL", "effectiveDateTime": "2025-06-13", "source_doc_id": "NH-1017-06-discharge-summary"},
+    {"resourceType": "Observation", "id": "obs-16", "category": "laboratory", "code": {"display": "Creatinine"}, "valueQuantity": {"value": 1.4, "unit": "mg/dL"}, "referenceRange": "0.6-1.2 mg/dL", "effectiveDateTime": "2025-07-02", "source_doc_id": "NH-1017-08-progress-note"},
+    {"resourceType": "Observation", "id": "obs-17", "category": "laboratory", "code": {"display": "Potassium"}, "valueQuantity": {"value": 4.3, "unit": "mmol/L"}, "referenceRange": "3.5-5.1 mmol/L", "effectiveDateTime": "2025-07-02", "source_doc_id": "NH-1017-08-progress-note"},
+    {"resourceType": "Observation", "id": "obs-18", "category": "vital-signs", "code": {"display": "Heart rate"}, "valueQuantity": {"value": 64, "unit": "beats/min"}, "referenceRange": "60-100 beats/min", "effectiveDateTime": "2025-07-02", "source_doc_id": "NH-1017-08-progress-note"},
+    {"resourceType": "Observation", "id": "obs-19", "category": "vital-signs", "code": {"display": "Blood pressure"}, "valueString": "132/80", "unit": "mmHg", "effectiveDateTime": "2025-07-02", "source_doc_id": "NH-1017-08-progress-note"}
+  ],
+  "Condition": [
+    {"resourceType": "Condition", "id": "cond-1", "code": {"display": "Atrial fibrillation"}, "clinicalStatus": "active", "onsetDate": "2023-04-11", "source_doc_id": "NH-1017-01-problem-list"},
+    {"resourceType": "Condition", "id": "cond-2", "code": {"display": "Hypertension"}, "clinicalStatus": "active", "onsetDate": "2016-01-01", "source_doc_id": "NH-1017-01-problem-list"},
+    {"resourceType": "Condition", "id": "cond-3", "code": {"display": "Hypokalemia"}, "clinicalStatus": "resolved", "onsetDate": "2025-06-09", "source_doc_id": "NH-1017-06-discharge-summary"}
+  ]
+}

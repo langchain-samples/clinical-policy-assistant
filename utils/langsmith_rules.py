@@ -1,12 +1,8 @@
-"""Offline-safe helper for LangSmith online-eval **run rules** (automations), used by the `05_observe` lab.
+"""Guarded helpers for LangSmith online-eval run rules and annotation queues (notebook 05).
 
-A run rule scores every new trace that matches a filter with an LLM-as-judge (or routes it to an
-annotation queue). Creating one MUTATES the workspace and requires org enablement, so this helper is
-**guarded**: it only calls the API when `ENABLE_ONLINE_EVALS=1` is set in the environment. During the
-headless notebook build (`build_lab.py` / nbconvert) that variable is unset, so the call is a no-op and
-returns a `{"skipped": ...}` dict instead of touching LangSmith. Set it explicitly to run the cell live.
-
-Secrets are referenced by name only — the LangSmith client reads `LANGSMITH_API_KEY` from the env itself.
+Creating rules or queues MUTATES the workspace and may need org enablement, so every helper only calls the
+API when `ENABLE_ONLINE_EVALS=1` is set. Otherwise it returns `{"skipped": ...}` and touches nothing.
+Callers pass names through `utils.workshop.scoped()` so 30 attendees never collide.
 """
 
 from __future__ import annotations
@@ -14,10 +10,25 @@ from __future__ import annotations
 import os
 from typing import Any
 
+_SKIP = {"skipped": "set ENABLE_ONLINE_EVALS=1 to create this live"}
+
 
 def online_evals_enabled() -> bool:
-    """True only when the operator has explicitly opted in. Unset during headless builds → cells no-op."""
     return os.environ.get("ENABLE_ONLINE_EVALS") == "1"
+
+
+def ensure_annotation_queue(name: str, description: str = "") -> dict[str, Any]:
+    """Create (or reuse) an annotation queue called `name`. Returns {"id", "name"} or the skip marker."""
+    if not online_evals_enabled():
+        return dict(_SKIP)
+    from langsmith import Client
+
+    client = Client()
+    for q in client.list_annotation_queues(name=name):
+        if q.name == name:
+            return {"id": str(q.id), "name": q.name}
+    q = client.create_annotation_queue(name=name, description=description)
+    return {"id": str(q.id), "name": q.name}
 
 
 def create_judge_run_rule(
@@ -28,20 +39,12 @@ def create_judge_run_rule(
     filter_: str = "eq(is_root, true)",
     sampling_rate: float = 1.0,
 ) -> dict[str, Any]:
-    """Create an LLM-as-judge run rule that scores matching new traces in `project_name`.
-
-    Guarded: returns `{"skipped": "set ENABLE_ONLINE_EVALS=1 to create the rule live"}` unless opted in,
-    so it is safe to execute in a headless build and never mutates the workspace by accident.
-
-    `filter_` is a LangSmith trace-filter expression (default: root runs only). `sampling_rate` is the
-    fraction of matching runs scored. Returns the created rule payload (or the skip marker).
-    """
+    """Create an LLM-as-judge run rule that scores new matching traces in `project_name` (guarded)."""
     if not online_evals_enabled():
-        return {"skipped": "set ENABLE_ONLINE_EVALS=1 to create the rule live"}
-
+        return dict(_SKIP)
     from langsmith import Client
 
-    client = Client()  # reads LANGSMITH_API_KEY / endpoint from the environment
+    client = Client()
     project = client.read_project(project_name=project_name)
     payload = {
         "display_name": display_name,
@@ -51,13 +54,12 @@ def create_judge_run_rule(
         "filter": filter_,
         "evaluators": [{"structured": {"prompt": judge_prompt}}],
     }
-    # The run-rules (automations) endpoint isn't in the typed SDK surface across versions; post directly.
     resp = client.request_with_retries("POST", "/runs/rules", data=payload)
     resp.raise_for_status()
     return resp.json()
 
 
-def route_low_scores_to_queue(
+def route_to_queue(
     *,
     project_name: str,
     display_name: str,
@@ -65,14 +67,9 @@ def route_low_scores_to_queue(
     filter_: str = "eq(is_root, true)",
     sampling_rate: float = 1.0,
 ) -> dict[str, Any]:
-    """Create a run rule that adds matching runs to an annotation queue for human review.
-
-    Same guard as `create_judge_run_rule`. Pair this with a score filter (e.g. runs whose judge score is
-    low) to build the online-eval → review → next-dataset loop.
-    """
+    """Create a run rule that adds matching runs to an annotation queue for human review (guarded)."""
     if not online_evals_enabled():
-        return {"skipped": "set ENABLE_ONLINE_EVALS=1 to create the rule live"}
-
+        return dict(_SKIP)
     from langsmith import Client
 
     client = Client()

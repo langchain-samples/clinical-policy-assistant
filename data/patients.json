@@ -1,0 +1,11 @@
+{
+  "_note": "SYNTHETIC / FICTIONAL patient roster for the Northfield Health chart Q&A teaching lab. Every name, date of birth and record is invented. No real patients, no PHI, no clinical guidance.",
+  "NH-1001": {"patient_id": "NH-1001", "name": "Edwin Talmadge", "birth_date": "1957-02-11", "sex": "male", "home_department": "Internal Medicine"},
+  "NH-1004": {"patient_id": "NH-1004", "name": "Lorna Effingham", "birth_date": "1950-09-23", "sex": "female", "home_department": "Hospital Medicine"},
+  "NH-1009": {"patient_id": "NH-1009", "name": "Gideon Ashworth", "birth_date": "1966-04-30", "sex": "male", "home_department": "Allergy and Immunology"},
+  "NH-1017": {"patient_id": "NH-1017", "name": "Corinne Abernathy", "birth_date": "1959-12-05", "sex": "female", "home_department": "Cardiology"},
+  "NH-1023": {"patient_id": "NH-1023", "name": "Harlan Brisco", "birth_date": "1944-07-19", "sex": "male", "home_department": "Hospital Medicine"},
+  "NH-1028": {"patient_id": "NH-1028", "name": "Marion Hale", "birth_date": "1953-03-08", "sex": "female", "home_department": "Pulmonology"},
+  "NH-1035": {"patient_id": "NH-1035", "name": "Marian Hale", "birth_date": "1954-03-18", "sex": "female", "home_department": "Pulmonology"},
+  "NH-1042": {"patient_id": "NH-1042", "name": "Walter Ingersoll", "birth_date": "1948-11-02", "sex": "male", "home_department": "Cardiology"}
+}

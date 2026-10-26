@@ -1,90 +1,141 @@
-# Medical-Information QA Agent — a LangChain / LangGraph / LangSmith lab
+# Chart Q&A assistant: a LangChain / LangGraph / LangSmith workshop lab
 
-A hands-on lab that builds a **medical-information QA assistant** and walks it through the full
-agent-engineering loop: **build → evaluate → orchestrate → deep agent → observe.**
+> **⚠️ Synthetic data notice.** Every patient, document, medication, dose, policy and the health system itself
+> ("Northfield Health") is **fictional**, invented for teaching. There is no real patient data, no PHI, and
+> no real clinical guidance. Medication names (Alvexora, Thrombelix, Nephravant, …) are made up. This lab is
+> not a clinical tool.
 
-The agent answers drug questions with **cited** answers grounded in prescribing information (PI),
-**refuses** off-label and personal-medical-advice requests, **escalates** suspected adverse events, and
-**never exposes patient identifiers**. Everything runs on **synthetic, fictional data** — the drugs
-(Alvexora, Brevamistol, Cardioryn, Dermasolix, Elmurestat), their labels, and every inquiry are invented
-for teaching. No real drugs, prescribing information, patient data, PII, secrets, or clinical advice.
+Clinicians ask questions about a synthetic patient's record. The assistant answers **only from that record**, with **citations to the exact document and section**:
 
-## What you'll build (5 notebooks)
+- *"What anticoagulants is patient NH-1042 on, and when was each started?"*
+- *"Summarize the last three cardiology notes for NH-1017."*
+- *"What was the most recent creatinine, and is it newer than the discharge summary?"*
 
-| Notebook | You learn |
+It **never makes clinical decisions**. It declines requests like *"should I increase the dose?"* and defers to the responsible clinician. Three guardrails run throughout:
+
+| Guardrail | Behavior |
 |---|---|
-| `01_build.ipynb` | Create grounding tools, wire an agent with `create_agent`, and enforce a typed answer with `response_format`. |
-| `02_evaluate.ipynb` | Seed an eval dataset and score the agent with LangSmith `evaluate()` — LLM-as-judge and code evaluators. |
-| `03_orchestrate.ipynb` | Add middleware — human-in-the-loop approval, PII redaction, tool-call limits — and memory/threads. |
-| `04_deep_agent.ipynb` | Scale to a **deep agent**: a coordinator that delegates per drug, with the three healthcare guardrails — PHI masking, refusal/adverse-event policy, and human-in-the-loop — and short-term vs long-term (non-PHI) memory. |
-| `05_observe.ipynb` | Production observability: tracing, online-eval run rules, and routing low scores to annotation queues. |
+| **Refusal** | recommendations and treatment decisions are declined (`disposition = declined_clinical_decision`) |
+| **Escalation** | possible safety events (medication error, fall, near miss) are flagged; in the agent, filing goes through **human approval** |
+| **PHI masking** | names, MRN-like numbers and DOBs pasted into a question are masked before they reach the model **or the trace** (`NH-####` is the allowed record key) |
+
+Everything runs **locally on a laptop**: local Chroma vector store, Jupyter notebooks, and `langgraph dev`. No cloud deployment.
+
+## The day
+
+| Notebook | Slot | You learn |
+|---|---|---|
+| `00_setup_check` | before 9:00 | env, model, embeddings, LangSmith, and a trace that lands (also `scripts/check_setup.py`) |
+| `01_build_rag` | Lab 1 · 75 min | chunk → embed (Chroma) → patient-filtered retrieval → `create_agent` + typed, cited `response_format` → read a trace |
+| `02_evaluate` | Lab 2 · 60 min | golden dataset in LangSmith, 3 LLM judges (OpenEvals) + 2 code evaluators, a `baseline` experiment |
+| `03_improve` | Lab 3 · 45 min | eval failure → trace → fix: structure-aware chunking, date-aware ranking, query rewriting, size/overlap → `improved-v1/v2` comparison |
+| `04_agent` | 3:00 demo · 35 min | structured FHIR lookup, PHI middleware, tool-call limit, HITL before filing a safety event; then a deep agent with per-source subagents; trajectory eval |
+| `05_observe` | Day 2 (optional) | online-eval run rules and annotation queues (opt-in: `ENABLE_ONLINE_EVALS=1`) |
+
+Attendee notebooks in `notebooks/` contain `# TODO` exercises. Completed versions with the same filenames are in **`solutions/`**.
 
 ## Prerequisites
 
-- **Python 3.11+** and [`uv`](https://docs.astral.sh/uv/)
-- An **OpenAI API key** (required)
-- A **LangSmith API key** (optional — needed for evaluation, tracing, and the observability notebook)
+- macOS / Linux / WSL laptop, **Python 3.11** (uv installs it for you) and [`uv`](https://docs.astral.sh/uv/)
+- A **LangSmith API key** for a workspace with the LLM Gateway enabled. By default OpenAI models are called **through the LangSmith gateway with that same key**, so no OpenAI key is needed.
+- *(Optional)* [Ollama](https://ollama.com) to run generation and embeddings locally
 
 ## Quickstart
 
 ```bash
-git clone https://github.com/langchain-samples/medical-information-qa.git
-cd medical-information-qa
-uv sync
-
-cp .env.example .env      # then add your OPENAI_API_KEY (LangSmith key optional)
-
+git clone <this repo> chart-qa-workshop && cd chart-qa-workshop
+uv sync                      # Python 3.11 + pinned dependencies
+cp .env.example .env         # set WORKSHOP_USER and LANGSMITH_API_KEY
+uv run python scripts/check_setup.py
 uv run jupyter lab notebooks/
 ```
 
-Open `notebooks/01_build.ipynb` and run top to bottom, then continue through `05_observe.ipynb`.
+`check_setup.py` prints a ✅/❌ line for each item and exits non-zero if anything fails. Open `notebooks/00_setup_check.ipynb`, then work through 01 → 04.
 
-### What needs a LangSmith key?
+## `.env` keys
 
-- **Runs without LangSmith:** `01_build`, `03_orchestrate` — the system prompt falls back to the
-  committed `data/prompt.md`, and trace links are simply skipped.
-- **Needs `LANGSMITH_API_KEY`:** `02_evaluate`, `04_deep_agent` (eval sections), `05_observe` — these
-  seed datasets, run experiments, and create observability rules in **your own** workspace.
+| Key | Required | Default | Notes |
+|---|---|---|---|
+| `WORKSHOP_USER` | **yes** | `<first-last>` placeholder | e.g. `jane-doe`. Every LangSmith dataset, experiment, project, prompt, rule and queue you create is suffixed with it, so 30 people can share one workspace. Notebooks **fail at the first cell** if it's unset. |
+| `LANGSMITH_API_KEY` | **yes** | | Tracing, datasets, experiments, and the default model route (gateway) |
+| `LANGSMITH_TRACING` | | `true` | |
+| `LANGSMITH_PROJECT` | | `chart-qa-${WORKSHOP_USER}` | Always scoped to you |
+| `LANGSMITH_WORKSPACE_ID` | | | Pin a workspace if your key sees several |
+| `LABS_MODEL` | | `openai:gpt-5.4-mini` | Generation. `provider:model`, e.g. `ollama:qwen2.5:7b` |
+| `LABS_EMBEDDINGS` | | `openai:text-embedding-3-small` | Embeddings, e.g. `ollama:nomic-embed-text` |
+| `LABS_JUDGE_MODEL` | | `openai:gpt-5.4-mini` | LLM-as-judge evaluators. Kept **hosted** even when generation is local |
+| `LABS_OPENAI_BASE_URL` | | LangSmith gateway | Set to `""` to call OpenAI directly with `OPENAI_API_KEY` |
+| `OPENAI_API_KEY` | only if direct | | Only when `LABS_OPENAI_BASE_URL=""` |
+| `OLLAMA_BASE_URL` | | `http://localhost:11434` | |
+| `LABS_VECTORSTORE` | | `chroma` | Set to `memory` to force the in-memory store |
+| `ENABLE_ONLINE_EVALS` | | unset | `1` lets notebook 05 create run rules / queues |
 
-The eval dataset is committed as JSON (`evals/dataset_medical_information_qa.json`) and seeded
-idempotently, so re-running never duplicates. Notebook 05's live online-eval rules are opt-in behind
-`ENABLE_ONLINE_EVALS=1`.
-
-> **Tip:** `04_deep_agent` includes a commented cell at the top that clears this lab's prior LangSmith
-> experiments — uncomment it if repeated runs clutter your dataset's *Experiments* view, then re-run to
-> repopulate with a single fresh experiment.
-
-## Run the graphs in LangGraph Studio
-
-The agents are registered in `langgraph.json`, so you can open them in LangGraph Studio:
+### Local models with Ollama
 
 ```bash
-uv run langgraph dev
+brew install ollama          # or see ollama.com for Linux/Windows
+ollama serve &               # leave running
+ollama pull qwen2.5:7b       # ~4.7 GB, generation
+ollama pull nomic-embed-text # ~270 MB, embeddings
 ```
 
-This serves three graphs: `medical_information_qa_agent`, `medical_information_qa_agent_hitl`, and
-`medical_information_qa_deep_agent`.
+```dotenv
+LABS_MODEL="ollama:qwen2.5:7b"
+LABS_EMBEDDINGS="ollama:nomic-embed-text"
+# keep the judge hosted:
+LABS_JUDGE_MODEL="openai:gpt-5.4-mini"
+```
 
-## Choosing the model
+Changing `LABS_EMBEDDINGS` creates a separate Chroma collection automatically; nothing needs deleting. The agent uses `ToolStrategy` for structured output on Ollama, because native JSON mode there suppresses tool calls.
 
-The model is set in one place — `utils/models.py` (default `openai:gpt-5.4-mini`). Override it without
-touching code via `LABS_MODEL` in your `.env` (e.g. `LABS_MODEL="openai:gpt-4o-mini"`) if your key can't
-call the default.
+> ⚠️ **Local models run the whole pipeline, but the guardrails are weaker.** In testing with `qwen2.5:7b`, notebooks 00, 01 and 03 ran without errors. However, the model sometimes returned free text instead of the typed answer, answered a dose-change question instead of declining, and missed the planted medication error. Use the hosted model for anything you evaluate or demo.
+
+A single exported variable can override `.env` for one run, without editing it. This works for `WORKSHOP_USER` and the `LABS_*` switches (credentials always come from `.env`):
+
+```bash
+LABS_MODEL=ollama:qwen2.5:7b LABS_EMBEDDINGS=ollama:nomic-embed-text uv run python scripts/check_setup.py
+```
+
+## LangGraph Studio
+
+```bash
+uv run langgraph dev    # http://127.0.0.1:2024
+```
+
+Studio: <https://smith.langchain.com/studio/?baseUrl=http://127.0.0.1:2024>
+
+| Graph | What it is |
+|---|---|
+| `chart_qa_rag` | the RAG app (improved retrieval) |
+| `chart_qa_agent_hitl` | notes search + structured lookup + `file_safety_event` behind human approval, PHI middleware, tool-call limit |
+| `chart_qa_deep_agent` | coordinator delegating to `notes-researcher` and `structured-lookup` subagents |
 
 ## Repository layout
 
 ```
-medical-information-qa/
-├── medical_information_qa_graph.py   # the deployable agent: tools, typed answer, and the 3 graphs
-├── utils/                            # model selection, prompt loading, tracing, online-eval rules
-├── evals/                            # dataset seeder + committed eval dataset (JSON)
-├── data/                             # synthetic fixtures: PI labels, drug profiles, inquiries, policies
-├── notebooks/                        # the 5 lab notebooks (+ images)
-└── langgraph.json                    # graph registry for LangGraph Studio
+chart_qa_graph.py       typed ChartAnswer, tools, and the three graphs
+utils/                  models (LABS_* switches), workshop.scoped(), corpus loader, retrieval + fixes, PHI detectors, tracing
+evals/                  golden dataset (JSON), seeders, evaluators, experiment harness
+data/charts/NH-xxxx/    synthetic chart notes (Markdown + front matter)
+data/fhir/              synthetic FHIR-style structured records
+data/policies/          fictional refusal / escalation / identifier policies (not retrieved)
+data/checks.py          offline consistency + synthetic-only checks
+notebooks/  solutions/  attendee notebooks with TODOs / completed versions
+scripts/                check_setup.py, run_experiments.py, build_notebooks.py (+ notebook_src/)
 ```
 
----
+Notebooks are generated from `scripts/notebook_src/*.py`. Edit there, then run `uv run python scripts/build_notebooks.py`.
 
-*Synthetic data notice: all drugs, prescribing information, inquiries, and policies are fictional and
-generated for teaching. Any resemblance to real medicines, people, or events is coincidental. This lab
-is not medical advice and is not a pharmacovigilance system.*
+## Common issues
+
+| Symptom | Fix |
+|---|---|
+| `RuntimeError: WORKSHOP_USER is not set` | Set it in `.env`, then **restart the kernel** (`.env` is read at the first cell) |
+| `401 … Incorrect API key provided: lsv2_…` on model calls | The gateway didn't accept your key. Check that the key belongs to the gateway-enabled workspace (`LANGSMITH_WORKSPACE_ID`), or switch to direct OpenAI (`LABS_OPENAI_BASE_URL=""` + `OPENAI_API_KEY`) |
+| `.env` changes ignored | Notebooks load `.env` with `override=True`. Restart the kernel after editing |
+| Chroma fails to install or start | It falls back to `InMemoryVectorStore` automatically (warning printed). Or set `LABS_VECTORSTORE=memory` |
+| Stale answers after editing a chart doc | Delete `.chroma/` to re-index |
+| `evaluate()` grades old references | `seed_dataset(refresh=True)` after editing `evals/dataset_chart_qa.json` |
+| Ollama: `connection refused` | `ollama serve` isn't running, or `OLLAMA_BASE_URL` is wrong |
+| Scores differ by a question or two between runs | LLM pipelines are noisy. Compare averages over `num_repetitions=2+` |
+| Mermaid graph image doesn't render | Offline renderer. The notebooks print the node list instead |
