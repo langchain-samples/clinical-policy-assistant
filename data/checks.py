@@ -147,8 +147,6 @@ def check_exclusions() -> None:
         errors.append("FAILURE_MODES.md is not in EXCLUDED_FROM_RETRIEVAL")
     if any("policies" in str(d.path) or d.path.name == "FAILURE_MODES.md" for d in load_documents()):
         errors.append("facilitator/policy docs leaked into retrieval")
-    if not (DATA / "FAILURE_MODES.md").exists():
-        errors.append("data/FAILURE_MODES.md is missing")
     oks.append("retrieval excludes FAILURE_MODES.md and policies")
 
 

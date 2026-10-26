@@ -119,7 +119,6 @@ evals/                  golden dataset (JSON), seeders, evaluators, experiment h
 data/charts/NH-xxxx/    synthetic chart notes (Markdown + front matter)
 data/fhir/              synthetic FHIR-style structured records
 data/policies/          fictional refusal / escalation / identifier policies (not retrieved)
-data/FAILURE_MODES.md   facilitator-only answer key for Lab 3 (not retrieved)
 data/checks.py          offline consistency + synthetic-only checks
 notebooks/  solutions/  attendee notebooks with TODOs / completed versions
 scripts/                check_setup.py, run_experiments.py, build_notebooks.py (+ notebook_src/)

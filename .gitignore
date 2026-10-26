@@ -29,6 +29,7 @@ __pycache__/
 # Workshop local state
 .scratch/
 .chroma/
+data/FAILURE_MODES.md
 *.sqlite3
 PLAN.md
 

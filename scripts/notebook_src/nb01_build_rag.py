@@ -43,7 +43,7 @@ code('''doc = next(d for d in docs if d.doc_id == "NH-1042-04-progress-note")
 print(doc.metadata())
 print()
 print(doc.body[:900])'''),
-md("> 💡 `data/FAILURE_MODES.md` (facilitator notes) and `data/policies/` are **excluded** from retrieval by `utils/corpus.py`. Only chart notes are searchable."),
+md("> 💡 Facilitator notes and `data/policies/` are **excluded** from retrieval by `utils/corpus.py`. Only chart notes are searchable."),
 
 md("""
 ## 2. Chunk it, the naive way
