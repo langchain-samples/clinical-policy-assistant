@@ -1,16 +1,16 @@
-"""Source for notebooks/03_improve.ipynb."""
+"""Source for notebooks/optional/improve_retrieval.ipynb (optional / Day 2)."""
 
 from _cells import SETUP, code, md
 
-FILENAME = "03_improve.ipynb"
+FILENAME = "optional/improve_retrieval.ipynb"
 
 CELLS = [
 md("""
-# 03 · Improve: from eval failures to fixes
+# Optional · Improve retrieval: from eval failures to fixes
 
-**Northfield Health chart assistant** (synthetic data only) · **Agenda slot:** Lab 3 · **Time box:** 45 min
+**Northfield Health chart assistant** (synthetic data only) · **Optional / Day 2** · **Time box:** 45 min
 
-Lab 2 gave us a `baseline` scorecard. Now we work the loop that matters in production:
+The day's labs used a pre-tuned retrieval pipeline (`RAG_CONFIG`). This notebook shows **how it got that way**: start from naive defaults, score them, and work the loop that matters in production:
 
 ```text
 low score → open the trace → name the root cause → change ONE thing → re-run the eval → compare
@@ -21,7 +21,7 @@ low score → open the trace → name the root cause → change ONE thing → re
 - apply four retrieval fixes: **structure-aware chunking**, **date-aware ranking**, **query rewriting** for clinical abbreviations, and **chunk size/overlap tuning**
 - run `improved-v1` and `improved-v2` and **compare experiments side by side**
 
-There are **2 `# TODO` cells** (the two improved configs). Completed versions live in `solutions/03_improve.ipynb`.
+There are **2 `# TODO` cells** (the two improved configs). Completed versions live in `solutions/optional/improve_retrieval.ipynb`.
 """),
 md("## 0. Setup"),
 code(SETUP),
@@ -38,7 +38,7 @@ seed_dataset()'''),
 md("""
 ## 1. Find your `baseline` experiment and its worst runs
 
-If you skipped Lab 2 (or it didn't finish), this cell runs the baseline for you.
+This experiment uses a create_agent-based RAG app with **naive** retrieval (500-character chunks, no overlap, no date awareness), so the fixes have headroom. If you haven't run it yet, this cell runs it for you.
 """),
 code('''def latest_experiment(prefix: str):
     ds = client.read_dataset(dataset_name=dataset_name())
@@ -236,6 +236,6 @@ md("""
 
 The loop: **trace → root cause → one change → experiment → compare**. That loop, not any single trick, is what keeps a clinical assistant improving safely.
 
-**Next:** `04_agent.ipynb` (3:00 demo).
+`improved-v1` is the pipeline the day's labs use as `RAG_CONFIG` (`chart_qa_graph.py`).
 """),
 ]

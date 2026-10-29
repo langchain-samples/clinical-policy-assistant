@@ -1,8 +1,8 @@
 """Chunking, a local persistent vector store, and a patient-filtered retriever for the chart corpus.
 
-Every Lab 3 fix is a field on `RetrievalConfig`, so a single object describes a pipeline variant:
+Every retrieval fix (see `notebooks/optional/improve_retrieval.ipynb`) is a field on `RetrievalConfig`, so a single object describes a pipeline variant:
 
-| Field              | Lab 1 baseline | What the fix does                                                  |
+| Field              | naive baseline | What the fix does                                                  |
 |--------------------|----------------|--------------------------------------------------------------------|
 | `chunker`          | "naive"        | "structure": split on sections, keep tables whole, add a header    |
 | `chunk_size`       | 500            | bigger chunks keep addenda with their context                      |
@@ -21,6 +21,7 @@ from __future__ import annotations
 import hashlib
 import os
 import re
+import threading
 import warnings
 from dataclasses import asdict, dataclass, replace
 
@@ -165,6 +166,7 @@ def chunk_corpus(config: RetrievalConfig = BASELINE, docs=None) -> list[Document
 # --------------------------------------------------------------------------------------------------
 
 _STORES: dict[str, object] = {}
+_BUILD_LOCK = threading.Lock()  # agents call tools in parallel threads; build/open each index exactly once
 
 
 def _collection_name(config: RetrievalConfig) -> str:
@@ -173,10 +175,17 @@ def _collection_name(config: RetrievalConfig) -> str:
 
 
 def build_vectorstore(config: RetrievalConfig = BASELINE, *, rebuild: bool = False, verbose: bool = True):
-    """Return a vector store for `config`'s chunking. Built once, then reused from `.chroma/`."""
+    """Return a vector store for `config`'s chunking. Built once, then reused from `.chroma/`. Thread-safe."""
     key = _collection_name(config)
     if key in _STORES and not rebuild:
         return _STORES[key]
+    with _BUILD_LOCK:
+        if key in _STORES and not rebuild:
+            return _STORES[key]
+        return _build_vectorstore(config, key, rebuild=rebuild, verbose=verbose)
+
+
+def _build_vectorstore(config: RetrievalConfig, key: str, *, rebuild: bool, verbose: bool):
     embeddings = get_embeddings()
     chunks = chunk_corpus(config)
     ids = [f"{c.metadata['doc_id']}::{c.metadata['chunk']}" for c in chunks]
@@ -224,11 +233,13 @@ def _search(store, query: str, k: int, patient_id: str | None) -> list[tuple[Doc
             kwargs["filter"] = {"patient_id": patient_id}
         else:
             kwargs["filter"] = lambda d: d.metadata.get("patient_id") == patient_id
-    return store.similarity_search_with_relevance_scores(query, k=k, **kwargs)
+    if type(store).__name__ == "Chroma":
+        return store.similarity_search_with_relevance_scores(query, k=k, **kwargs)
+    return store.similarity_search_with_score(query, k=k, **kwargs)  # InMemoryVectorStore: cosine similarity
 
 
 # --------------------------------------------------------------------------------------------------
-# Query rewriting (Lab 3 fix #3)
+# Query rewriting (fix #3)
 # --------------------------------------------------------------------------------------------------
 
 ABBREVIATIONS = {

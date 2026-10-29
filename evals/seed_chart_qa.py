@@ -28,6 +28,17 @@ def dataset_name() -> str:
     return scoped(DATASET_BASENAME)
 
 
+def expected_routes(example: dict) -> list[str]:
+    """Which Lab 3 workflow route(s) are correct: refuse decision requests, send safety events to human review,
+    answer everything else. `expects_safety_event: null` means either answer route is acceptable."""
+    if example["category"] == "refusal":
+        return ["refuse"]
+    safety = example.get("expects_safety_event", False)
+    if safety is None:
+        return ["answer", "answer_with_review"]
+    return ["answer_with_review"] if safety else ["answer"]
+
+
 def load_examples() -> list[dict]:
     """Committed examples as LangSmith example dicts (inputs / outputs / metadata / split)."""
     raw = json.loads(DATASET_PATH.read_text())["examples"]
@@ -42,6 +53,8 @@ def load_examples() -> list[dict]:
                 "category": e["category"],
                 "failure_mode": e.get("failure_mode"),
                 "expects_safety_event": e.get("expects_safety_event", False),
+                "expected_tools": e.get("expected_tools", []),
+                "expected_routes": expected_routes(e),
             },
             "metadata": meta,
             "split": e["category"],
@@ -59,6 +72,11 @@ def seed_dataset(name: str | None = None, *, refresh: bool = False) -> str | Non
 
     client = Client()
     examples = load_examples()
+    if not refresh and client.has_dataset(dataset_name=name):
+        sample = next(iter(client.list_examples(dataset_name=name, limit=1)), None)
+        if sample is not None and "expected_routes" not in (sample.outputs or {}):
+            print(f"{name!r} predates the agent/route fields: rebuilding it.")
+            refresh = True
     if refresh and client.has_dataset(dataset_name=name):
         client.delete_dataset(dataset_name=name)
     if client.has_dataset(dataset_name=name):

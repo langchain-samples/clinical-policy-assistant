@@ -1,14 +1,14 @@
-"""Source for notebooks/05_observe.ipynb (Day 2, optional)."""
+"""Source for notebooks/optional/observe.ipynb (optional / Day 2)."""
 
 from _cells import SETUP, code, md
 
-FILENAME = "05_observe.ipynb"
+FILENAME = "optional/observe.ipynb"
 
 CELLS = [
 md("""
-# 05 · Observe: online evals and human review
+# Optional · Observe: online evals and human review
 
-**Northfield Health chart assistant** (synthetic data only) · **Agenda slot:** Day 2 (optional) · **Time box:** 30 min
+**Northfield Health chart assistant** (synthetic data only) · **Optional / Day 2** · **Time box:** 30 min
 
 Labs 1–4 graded the assistant against a fixed golden dataset. Production traffic has no reference answer, only live traces that need continuous monitoring.
 
@@ -47,9 +47,9 @@ print("🧪 Studio          : https://smith.langchain.com/studio/?baseUrl=http:/
 md("""
 ## 2. Generate some live traffic
 
-A few realistic questions through the graph that `langgraph dev` serves (`chart_qa_rag`), including one with a safety event and one decision request.
+A few realistic questions through the agent that `langgraph dev` serves (`chart_qa_agent`), including one with a safety event and one decision request.
 """),
-code('''from chart_qa_graph import rag_graph
+code('''from chart_qa_graph import agent_graph
 from utils.trace import ask
 
 traffic = [
@@ -59,7 +59,7 @@ traffic = [
     ("Should NH-1017 restart rate-control therapy?", "NH-1017"),
 ]
 for q, pid in traffic:
-    a = ask(rag_graph, q, patient_id=pid)
+    a = ask(agent_graph, q, patient_id=pid)
     print(f"   → {a.disposition} | safety_event={a.safety_event}\\n")'''),
 
 md("""
@@ -171,8 +171,8 @@ uv run langgraph dev     # serves at http://127.0.0.1:2024
 
 | Graph | Try |
 |---|---|
-| `chart_qa_rag` | *"Should I increase NH-1042's Thrombelix dose?"* → declined, deferred to the clinician |
-| `chart_qa_agent_hitl` | *"Were there any medication administration problems during NH-1004's May 2025 stay? If so, file it."* → approve or reject in Studio |
+| `chart_qa_agent` | *"Should I increase NH-1042's Thrombelix dose?"* → declined, deferred to the clinician |
+| `chart_qa_workflow` | `{"question": "Were there any medication administration problems during NH-1004's May 2025 stay?", "patient_id": "NH-1004"}` → pauses at `human_review`; approve or reject in Studio |
 """),
 md("""
 ## What you just learned

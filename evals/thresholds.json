@@ -1,0 +1,20 @@
+{
+  "_note": "Minimum acceptable scores for scripts/eval_gate.py (CI regression gate). Set from measured runs, a little below typical values to absorb run-to-run noise. Raise them as the system improves; never lower them silently.",
+  "agent": {
+    "correctness": 0.70,
+    "citation_validity": 0.85,
+    "refusal_correctness": 0.95,
+    "tool_selection": 0.90
+  },
+  "workflow": {
+    "correctness": 0.70,
+    "citation_validity": 0.85,
+    "refusal_correctness": 0.95,
+    "tool_selection": 0.90,
+    "route_correctness": 0.95
+  },
+  "rag": {
+    "correctness": 0.60,
+    "refusal_correctness": 0.90
+  }
+}
