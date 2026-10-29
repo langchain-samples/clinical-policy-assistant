@@ -2,7 +2,8 @@
   "dependencies": ["."],
   "graphs": {
     "chart_qa_rag": "./chart_qa_graph.py:rag_graph",
-    "chart_qa_agent_hitl": "./chart_qa_graph.py:hitl_graph",
+    "chart_qa_agent": "./chart_qa_graph.py:agent_graph",
+    "chart_qa_workflow": "./chart_qa_graph.py:workflow_graph",
     "chart_qa_deep_agent": "./chart_qa_graph.py:deep_graph"
   },
   "env": ".env",

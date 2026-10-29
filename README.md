@@ -16,21 +16,30 @@ It **never makes clinical decisions**. It declines requests like *"should I incr
 | Guardrail | Behavior |
 |---|---|
 | **Refusal** | recommendations and treatment decisions are declined (`disposition = declined_clinical_decision`) |
-| **Escalation** | possible safety events (medication error, fall, near miss) are flagged; in the agent, filing goes through **human approval** |
+| **Escalation** | possible safety events (medication error, fall, near miss) are flagged; in the workflow, filing goes through **human approval** |
 | **PHI masking** | names, MRN-like numbers and DOBs pasted into a question are masked before they reach the model **or the trace** (`NH-####` is the allowed record key) |
 
 Everything runs **locally on a laptop**: local Chroma vector store, Jupyter notebooks, and `langgraph dev`. No cloud deployment.
 
-## The day
+## The day: one application, four milestones
 
-| Notebook | Slot | You learn |
-|---|---|---|
-| `00_setup_check` | before 9:00 | env, model, embeddings, LangSmith, and a trace that lands (also `scripts/check_setup.py`) |
-| `01_build_rag` | Lab 1 · 75 min | chunk → embed (Chroma) → patient-filtered retrieval → `create_agent` + typed, cited `response_format` → read a trace |
-| `02_evaluate` | Lab 2 · 60 min | golden dataset in LangSmith, 3 LLM judges (OpenEvals) + 2 code evaluators, a `baseline` experiment |
-| `03_improve` | Lab 3 · 45 min | eval failure → trace → fix: structure-aware chunking, date-aware ranking, query rewriting, size/overlap → `improved-v1/v2` comparison |
-| `04_agent` | 3:00 demo · 35 min | structured FHIR lookup, PHI middleware, tool-call limit, HITL before filing a safety event; then a deep agent with per-source subagents; trajectory eval |
-| `05_observe` | Day 2 (optional) | online-eval run rules and annotation queues (opt-in: `ENABLE_ONLINE_EVALS=1`) |
+You build the chart assistant once and evolve it through four hands-on milestones:
+
+| Notebook | Milestone | You build | You learn |
+|---|---|---|---|
+| `00_setup_check` | before 9:00 | — | env, model, embeddings, LangSmith, a trace that lands (also `scripts/check_setup.py`) |
+| `01_build_rag` | **1 · RAG** (60 min) | retrieve → generate pipeline with a typed, cited answer | chunking, Chroma, patient-filtered **retrieval**, **grounding** with verbatim citations, reading a trace |
+| `02_agent` | **2 · Agent → deep agent** (60 min) | `create_agent` with notes search + a structured-record tool; then a deep agent with per-source subagents | **tool selection**, the **reasoning loop**, tool-call limits, memory; deep-agent **design considerations**; managed **Context Hub** (versioned `AGENTS.md` + skills) and **Sandboxes** (isolated `execute`) |
+| `03_langgraph` | **3 · LangGraph** (75 min) | a `StateGraph`: mask → classify → refuse / agent → human review → file | typed state + reducers, nodes, edges, **conditional routing**, `interrupt()` + resume, **durable execution**, the **framework vs application** line, Studio |
+| `04_evaluate` | **4 · Evaluation** (60 min) | experiments for the pipeline, the agent and the workflow | **answer** + **behavior** evals (tool selection, trajectory, route), **regression gates**, quality over time, **observability & governance** (trace redaction, deployment posture) |
+
+**Optional / Day 2** (`notebooks/optional/`):
+
+| Notebook | Topic |
+|---|---|
+| `improve_retrieval` | tune the RAG pipeline against evals: structure-aware chunking, date-aware ranking, query rewriting, size/overlap |
+| `deep_agent` | a deep agent: coordinator + per-source subagents, memory, guardrails, evals |
+| `observe` | online-eval run rules and annotation queues (opt-in: `ENABLE_ONLINE_EVALS=1`) |
 
 Attendee notebooks in `notebooks/` contain `# TODO` exercises. Completed versions with the same filenames are in **`solutions/`**.
 
@@ -88,7 +97,7 @@ LABS_JUDGE_MODEL="openai:gpt-5.4-mini"
 
 Changing `LABS_EMBEDDINGS` creates a separate Chroma collection automatically; nothing needs deleting. The agent uses `ToolStrategy` for structured output on Ollama, because native JSON mode there suppresses tool calls.
 
-> ⚠️ **Local models run the whole pipeline, but the guardrails are weaker.** In testing with `qwen2.5:7b`, notebooks 00, 01 and 03 ran without errors. However, the model sometimes returned free text instead of the typed answer, answered a dose-change question instead of declining, and missed the planted medication error. Use the hosted model for anything you evaluate or demo.
+> ⚠️ **Local models run the labs, but behave less reliably.** In testing with `qwen2.5:7b`, notebooks 00, 01 and 03 ran without errors. However, the RAG pipeline answered a dose-change question instead of declining, and in Lab 3 the router sent the medication-error question to `refuse` instead of `answer` → `human_review`. (The deterministic graph steps still held: masking ran first and nothing was filed without approval.) Use the hosted model for anything you evaluate or demo.
 
 A single exported variable can override `.env` for one run, without editing it. This works for `WORKSHOP_USER` and the `LABS_*` switches (credentials always come from `.env`):
 
@@ -106,22 +115,24 @@ Studio: <https://smith.langchain.com/studio/?baseUrl=http://127.0.0.1:2024>
 
 | Graph | What it is |
 |---|---|
-| `chart_qa_rag` | the RAG app (improved retrieval) |
-| `chart_qa_agent_hitl` | notes search + structured lookup + `file_safety_event` behind human approval, PHI middleware, tool-call limit |
-| `chart_qa_deep_agent` | coordinator delegating to `notes-researcher` and `structured-lookup` subagents |
+| `chart_qa_rag` | Milestone 1: the retrieve → generate pipeline. Input: `{"question": …, "patient_id": "NH-…"}` |
+| `chart_qa_agent` | Milestone 2: the agent (notes search + structured lookup, tool-call limit). Input: a chat message |
+| `chart_qa_workflow` | Milestone 3: the controlled workflow with the human-review interrupt. Input: `{"question": …, "patient_id": "NH-…"}` |
+| `chart_qa_deep_agent` | Optional: coordinator delegating to `notes-researcher` and `structured-lookup` subagents |
 
 ## Repository layout
 
 ```
-chart_qa_graph.py       typed ChartAnswer, tools, and the three graphs
-utils/                  models (LABS_* switches), workshop.scoped(), corpus loader, retrieval + fixes, PHI detectors, tracing
-evals/                  golden dataset (JSON), seeders, evaluators, experiment harness
+chart_qa_graph.py       typed ChartAnswer, tools, and the app at each milestone (pipeline, agent, workflow, deep agent)
+agent_context/          deep agent's team conventions (AGENTS.md) + skills; published to Context Hub in Lab 2
+utils/                  models (LABS_* switches), workshop.scoped(), corpus loader, retrieval, PHI detectors, tracing, managed (Context Hub / Sandboxes)
+evals/                  golden dataset (JSON), seeder, evaluators, experiment harness, regression thresholds
 data/charts/NH-xxxx/    synthetic chart notes (Markdown + front matter)
 data/fhir/              synthetic FHIR-style structured records
 data/policies/          fictional refusal / escalation / identifier policies (not retrieved)
 data/checks.py          offline consistency + synthetic-only checks
 notebooks/  solutions/  attendee notebooks with TODOs / completed versions
-scripts/                check_setup.py, run_experiments.py, build_notebooks.py (+ notebook_src/)
+scripts/                check_setup.py, run_experiments.py, eval_gate.py (CI regression gate), build_notebooks.py (+ notebook_src/)
 ```
 
 Notebooks are generated from `scripts/notebook_src/*.py`. Edit there, then run `uv run python scripts/build_notebooks.py`.
@@ -139,3 +150,4 @@ Notebooks are generated from `scripts/notebook_src/*.py`. Edit there, then run `
 | Ollama: `connection refused` | `ollama serve` isn't running, or `OLLAMA_BASE_URL` is wrong |
 | Scores differ by a question or two between runs | LLM pipelines are noisy. Compare averages over `num_repetitions=2+` |
 | Mermaid graph image doesn't render | Offline renderer. The notebooks print the node list instead |
+| Lab 2 Part B: "Context Hub unavailable" or "Sandboxes unavailable" | Those LangSmith features aren't enabled for your workspace. The cells still run: the agent reads `agent_context/` from disk, and reports raw values instead of running code |

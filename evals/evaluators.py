@@ -137,7 +137,9 @@ def citation_validity(inputs: dict, outputs: dict, reference_outputs: dict) -> d
     refs = set(reference_outputs.get("reference_doc_ids") or [])
     if answerable and not cites:
         problems.append("no citations")
-    if answerable and refs and not ({_doc_id(c) for c in cites} & refs):
+    cited = {_doc_id(c) for c in cites}
+    structured = any(d.startswith("fhir/") or d.endswith(".json") for d in cited)  # the structured record is a valid source too
+    if answerable and refs and not (cited & refs) and not structured:
         problems.append(f"none of the expected source docs cited ({', '.join(sorted(refs))})")
     return {"key": "citation_validity", "score": not problems, "comment": "; ".join(problems) or f"{len(cites)} valid citation(s)"}
 
@@ -162,3 +164,76 @@ def refusal_correctness(inputs: dict, outputs: dict, reference_outputs: dict) ->
 
 
 ALL_EVALUATORS = [retrieval_relevance, groundedness, correctness, citation_validity, refusal_correctness]
+
+
+# ---------------------------------------------------------------------------------------- agent behavior
+# Targets that run an agent also return `tool_calls` (tool names in call order) and `messages` (OpenAI format);
+# the Lab 3 workflow also returns `path` (nodes visited). Evaluators return score=None when a target has no such
+# behavior (e.g. the RAG pipeline never chooses a tool), so one evaluator list works for every system.
+
+DATA_TOOLS = {"search_chart_notes", "lookup_structured_record"}
+
+
+def tool_selection(inputs: dict, outputs: dict, reference_outputs: dict) -> dict:
+    """Did the agent call the right tool(s)? Every `expected_tools` entry must be called. With no specific
+    expectation, an answerable or not-in-record question still needs at least one record lookup: an agent
+    must never answer (or claim absence) from memory. Refusals are n/a."""
+    if "tool_calls" not in outputs:
+        return {"key": "tool_selection", "score": None, "comment": "n/a: this system does not choose tools"}
+    called = set(outputs["tool_calls"])
+    expected = set(reference_outputs.get("expected_tools") or [])
+    if expected:
+        missing = expected - called
+        return {"key": "tool_selection", "score": not missing,
+                "comment": f"missing {sorted(missing)}; called {outputs['tool_calls']}" if missing else f"called {outputs['tool_calls']}"}
+    if reference_outputs.get("category") == "refusal":
+        return {"key": "tool_selection", "score": None, "comment": "n/a: refusal"}
+    if (outputs.get("path") or []) and "answer" not in outputs["path"]:
+        return {"key": "tool_selection", "score": None, "comment": "n/a: the workflow did not reach the agent"}
+    looked = bool(called & DATA_TOOLS)
+    return {"key": "tool_selection", "score": looked, "comment": f"called {outputs['tool_calls'] or 'no tools'}"}
+
+
+@lru_cache(maxsize=1)
+def _trajectory_judge():
+    from openevals.trajectory.llm import TRAJECTORY_ACCURACY_PROMPT, create_trajectory_llm_as_judge
+
+    return create_trajectory_llm_as_judge(prompt=TRAJECTORY_ACCURACY_PROMPT, feedback_key="trajectory_accuracy",
+                                          judge=get_judge_model())
+
+
+def trajectory_accuracy(inputs: dict, outputs: dict, reference_outputs: dict) -> dict:
+    """LLM judge over the whole message trajectory: do the steps make sense, progress, and stay efficient?"""
+    if not outputs.get("messages"):
+        return {"key": "trajectory_accuracy", "score": None, "comment": "n/a: no agent trajectory"}
+    return _result("trajectory_accuracy", _trajectory_judge()(outputs=outputs["messages"]))
+
+
+def tool_call_count(inputs: dict, outputs: dict, reference_outputs: dict) -> dict:
+    """Efficiency signal (not pass/fail): how many tool calls the agent made."""
+    if "tool_calls" not in outputs:
+        return {"key": "tool_call_count", "score": None, "comment": "n/a"}
+    return {"key": "tool_call_count", "score": len(outputs["tool_calls"]), "comment": ", ".join(outputs["tool_calls"])}
+
+
+def route_of(path: list[str]) -> str:
+    """Collapse the workflow's node path into the route it took."""
+    if "refuse" in path:
+        return "refuse"
+    if "emergency" in path:
+        return "emergency"
+    return "answer_with_review" if "human_review" in path else "answer"
+
+
+def route_correctness(inputs: dict, outputs: dict, reference_outputs: dict) -> dict:
+    """Lab 3 workflow: did the graph take an acceptable route (refuse / answer / answer + human review)?"""
+    if "path" not in outputs:
+        return {"key": "route_correctness", "score": None, "comment": "n/a: not a workflow"}
+    route = route_of(outputs["path"])
+    ok = route in (reference_outputs.get("expected_routes") or ["answer"])
+    return {"key": "route_correctness", "score": ok,
+            "comment": f"route={route}, expected one of {reference_outputs.get('expected_routes')}; path={outputs['path']}"}
+
+
+ANSWER_EVALUATORS = [correctness, groundedness, citation_validity, refusal_correctness]
+BEHAVIOR_EVALUATORS = [tool_selection, trajectory_accuracy, tool_call_count, route_correctness]

@@ -1,4 +1,8 @@
-"""Source for notebooks/04_agent.ipynb: merges the former 03_orchestrate and 04_deep_agent labs (full content)."""
+"""LEGACY cell source, not built as its own notebook (see NOTEBOOKS in scripts/build_notebooks.py).
+
+`nbopt2_deep_agent.py` builds `notebooks/optional/deep_agent.ipynb` from Part B of these cells (B1–B9, up to
+but excluding the old trajectory eval). Part A's ideas now live in Labs 02 (agent) and 03 (LangGraph).
+"""
 
 from _cells import SETUP, code, md
 

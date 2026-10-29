@@ -33,17 +33,24 @@ def _cell(spec, solution: bool):
     return new_code_cell(src.strip("\n"))
 
 
+# The workshop day (milestones 1-4) plus the optional / Day 2 notebooks.
+NOTEBOOKS = [
+    "nb00_setup_check", "nb01_build_rag", "nb02_agent", "nb03_langgraph", "nb04_evaluate",
+    "nbopt1_improve_retrieval", "nbopt2_deep_agent", "nbopt3_observe",
+]
+
+
 def build(module_name: str) -> None:
     mod = importlib.import_module(module_name)
     for folder, solution in (("notebooks", False), ("solutions", True)):
         nb = new_notebook(cells=[_cell(c, solution) for c in mod.CELLS], metadata=KERNEL)
         out = ROOT / folder / mod.FILENAME
-        out.parent.mkdir(exist_ok=True)
+        out.parent.mkdir(parents=True, exist_ok=True)
         nbformat.write(nb, out)
         print(f"wrote {out.relative_to(ROOT)} ({len(nb.cells)} cells)")
 
 
 if __name__ == "__main__":
-    names = sys.argv[1:] or sorted(p.stem for p in SRC.glob("nb*.py"))
+    names = sys.argv[1:] or NOTEBOOKS
     for name in names:
         build(name)

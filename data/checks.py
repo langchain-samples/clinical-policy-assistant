@@ -134,6 +134,10 @@ def check_dataset() -> None:
                 errors.append(f"dataset ref {ref!r} does not exist")
             elif by_id[ref].patient_id != e["patient_id"]:
                 errors.append(f"dataset ref {ref!r} belongs to another patient")
+    known_tools = {"search_chart_notes", "lookup_structured_record"}
+    for e in ex:
+        if "expected_tools" not in e or not set(e["expected_tools"]) <= known_tools:
+            errors.append(f"dataset example has missing/unknown expected_tools: {e['question'][:50]}")
     fms = {e.get("failure_mode") for e in ex if e["category"] == "failure_mode"}
     if len(fms) != 6:
         errors.append(f"expected 6 distinct failure modes, found {fms}")
@@ -198,14 +202,26 @@ def check_graph_contract() -> None:
     except Exception as exc:  # noqa: BLE001
         errors.append(f"chart_qa_graph failed to import: {exc}")
         return
-    for attr in ("rag_graph", "hitl_graph", "deep_graph", "ChartAnswer", "lookup_structured_record", "file_safety_event"):
+    for attr in ("rag_graph", "agent_graph", "workflow_graph", "deep_graph", "ChartAnswer", "lookup_structured_record",
+                 "file_safety_event", "rag_answer", "build_agent", "build_workflow"):
         if not hasattr(g, attr):
             errors.append(f"chart_qa_graph missing {attr}")
     cfg = json.loads((ROOT / "langgraph.json").read_text())["graphs"]
-    want = {"chart_qa_rag": "./chart_qa_graph.py:rag_graph", "chart_qa_agent_hitl": "./chart_qa_graph.py:hitl_graph",
-            "chart_qa_deep_agent": "./chart_qa_graph.py:deep_graph"}
+    want = {"chart_qa_rag": "./chart_qa_graph.py:rag_graph", "chart_qa_agent": "./chart_qa_graph.py:agent_graph",
+            "chart_qa_workflow": "./chart_qa_graph.py:workflow_graph", "chart_qa_deep_agent": "./chart_qa_graph.py:deep_graph"}
     if cfg != want:
         errors.append(f"langgraph.json graphs {cfg} != {want}")
+    wf_nodes = set(g.workflow_graph.get_graph().nodes)
+    for node in ("mask_phi", "classify", "refuse", "emergency", "answer", "human_review", "file_event"):
+        if node not in wf_nodes:
+            errors.append(f"workflow_graph missing node {node}")
+    ctx_dir = ROOT / "agent_context"
+    for rel in ("AGENTS.md", "skills/pre-visit-brief/SKILL.md", "skills/lab-trend/SKILL.md"):
+        p = ctx_dir / rel
+        if not p.exists():
+            errors.append(f"agent_context/{rel} is missing")
+        elif "SYNTHETIC" not in p.read_text():
+            errors.append(f"agent_context/{rel} lacks a synthetic notice")
     out = g.lookup_structured_record.invoke({"patient_id": "NH-1042", "resource_type": "MedicationStatement", "contains": "Thrombelix"})
     if "2025-03-14" not in out:
         errors.append("lookup_structured_record did not return Thrombelix start date for NH-1042")
